@@ -5,16 +5,18 @@ package me.zeejfps.gametoolkit.engine;
  */
 public abstract class Game {
 
-    public final Display display;
-    public final Input input;
     public final Time time;
+    public final Input input;
+    public final Screen screen;
+    public final Window window;
 
     private double nsPerUpdate;
     private volatile boolean running;
 
     public Game() {
-        display = new Display();
-        input = new Input(display);
+        screen = new Screen();
+        window = new Window(screen);
+        input = new Input(window);
         time = new Time();
     }
 
@@ -32,7 +34,7 @@ public abstract class Game {
 
     private void init() {
         onInit();
-        display.setVisible(true);
+        window.setVisible(true);
     }
 
     private void loop() {
@@ -76,7 +78,7 @@ public abstract class Game {
 
     private void render() {
         onRender();
-        display.updateFramebuffer();
+        window.updateFramebuffer();
     }
 
     protected abstract void onInit();

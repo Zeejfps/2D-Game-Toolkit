@@ -7,9 +7,13 @@ import java.util.Arrays;
  */
 public class Bitmap {
 
-    public final int width;
-    public final int height;
-    public final int[] pixels;
+    protected int width;
+    protected int height;
+    protected int[] pixels;
+
+    public Bitmap() {
+        this(0, 0);
+    }
 
     public Bitmap(Bitmap copy){
         this(copy.width, copy.height, Arrays.copyOf(copy.pixels, copy.pixels.length));

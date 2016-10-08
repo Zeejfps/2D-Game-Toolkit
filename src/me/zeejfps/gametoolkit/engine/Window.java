@@ -1,32 +1,31 @@
 package me.zeejfps.gametoolkit.engine;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.util.Arrays;
+import java.io.IOException;
 
 /**
  * Created by Zeejfps on 8/12/2016.
  */
-public class Display {
+public class Window {
 
-    protected final JFrame window;
+    protected final JFrame frame;
     protected final Canvas canvas;
     protected final GraphicsConfiguration gc;
 
-    private BufferedImage framebufferImg;
-    private Bitmap framebuffer;
     private int xPos, yPos, scaledWidth, scaledHeight;
-    private double aspect;
     private BufferStrategy bufferStrat;
+    private Screen screen;
+    private float oldAspect;
 
-    public Display(){
+    public Window(Screen screen){
+
+        this.screen = screen;
+
         gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
         canvas = new Canvas(gc);
@@ -40,22 +39,23 @@ public class Display {
             }
         });
 
-        window = new JFrame(gc);
-        window.setBackground(Color.BLACK);
-        window.setIgnoreRepaint(true);
-        window.add(canvas);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame = new JFrame(gc);
+        frame.setBackground(Color.BLACK);
+        frame.setIgnoreRepaint(true);
+        frame.add(canvas);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setWindowTitle("Untitled Game");
-        setWindowSize(640, 480);
-        setFramebufferSize(320, 240);
-    }
-
-    public void clear(int color) {
-        Arrays.fill(framebuffer.pixels, color);
+        setTitle("Untitled Game");
+        setResizable(true);
+        setSize(640, 480);
     }
 
     protected void updateFramebuffer() {
+
+        if (screen.getAspectRatio() != oldAspect) {
+            resize();
+            oldAspect = screen.getAspectRatio();
+        }
 
         if (bufferStrat == null) {
             canvas.createBufferStrategy(2);
@@ -74,13 +74,13 @@ public class Display {
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
         // Draw the framebuffer
-        g.drawImage(framebufferImg, xPos, yPos, scaledWidth, scaledHeight, null);
+        g.drawImage(screen.getColorBuffer(), xPos, yPos, scaledWidth, scaledHeight, null);
         g.dispose();
         bufferStrat.show();
     }
 
     public void setVisible(boolean visible) {
-        window.setVisible(visible);
+        frame.setVisible(visible);
         canvas.requestFocusInWindow();
     }
 
@@ -92,37 +92,31 @@ public class Display {
         return canvas.getHeight();
     }
 
-    public Bitmap framebuffer() {
-        return framebuffer;
+    public void setTitle(String title) {
+        frame.setTitle(title);
     }
 
-    public void setWindowTitle(String title) {
-        window.setTitle(title);
-    }
-
-    public void setWindowSize(int width, int height) {
+    public void setSize(int width, int height) {
         canvas.setPreferredSize(new Dimension(width, height));
-        window.pack();
-        window.setLocationRelativeTo(null);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
         resize();
     }
 
-    public void setFramebufferSize(int width, int height) {
-        aspect = width / (float)height;
-        framebufferImg = gc.createCompatibleImage(
-                width,
-                height,
-                BufferedImage.OPAQUE
-        );
-        framebuffer = new Bitmap(
-                framebufferImg.getWidth(),
-                framebufferImg.getHeight(),
-                ((DataBufferInt) framebufferImg.getRaster().getDataBuffer()).getData()
-        );
-        resize();
+    public void setResizable(boolean resizable) {
+        frame.setResizable(resizable);
+    }
+
+    public void setIconImage(String image) {
+        try {
+            frame.setIconImage(ImageIO.read(getClass().getClassLoader().getResourceAsStream(image)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void resize() {
+        float aspect = screen.getAspectRatio();
         if (aspect == 0) return;
         int w = canvas.getWidth();
         int h = canvas.getHeight();

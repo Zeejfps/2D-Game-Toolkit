@@ -2,6 +2,7 @@ package me.zeejfps.tests.pixelsnakegame;
 
 import me.zeejfps.gametoolkit.engine.Bitmap;
 import me.zeejfps.gametoolkit.engine.Game;
+import me.zeejfps.gametoolkit.engine.Screen;
 import me.zeejfps.gametoolkit.math.Vec2i;
 
 import java.awt.*;
@@ -44,9 +45,10 @@ public class PixelSnakeGame extends Game {
         snake = new ArrayDeque<>();
 
         setFixedUpdateInterval(8);
-        display.setWindowSize(640, 480);
-        display.setFramebufferSize(mapSize.x, mapSize.y);
-        display.setWindowTitle("Snake Game");
+        window.setSize(640, 480);
+        //window.setFramebufferSize(mapSize.x, mapSize.y);
+        window.setTitle("Snake Game");
+        screen.setSize(mapSize.x, mapSize.y);
     }
 
     @Override
@@ -85,13 +87,13 @@ public class PixelSnakeGame extends Game {
     long startTime;
     @Override
     protected void onRender() {
-        display.clear(0);
-        drawApple(display.framebuffer());
-        drawSnake(display.framebuffer());
-        drawMap(display.framebuffer());
+        screen.clear(0);
+        drawApple(screen);
+        drawSnake(screen);
+        drawMap(screen);
         fps++;
         if (System.currentTimeMillis() - startTime >= 1000) {
-            display.setWindowTitle("Snake Game | FPS: " + fps);
+            window.setTitle("Snake Game | FPS: " + fps);
             fps = 0;
             startTime = System.currentTimeMillis();
         }
@@ -159,30 +161,30 @@ public class PixelSnakeGame extends Game {
         return !applePos.equals(head);
     }
 
-    private void drawApple(Bitmap bitmap) {
-        int[] pixels = bitmap.pixels;
-        pixels[applePos.y * bitmap.width + applePos.x] = 0xff0000;
+    private void drawApple(Screen screen) {
+        int[] pixels = screen.pixels();
+        pixels[applePos.y * screen.getWidth() + applePos.x] = 0xff0000;
     }
 
-    private void drawSnake(Bitmap bitmap) {
-        int[] pixels = bitmap.pixels;
+    private void drawSnake(Screen screen) {
+        int[] pixels = screen.pixels();
 
         for (Vec2i v : snake) {
-            pixels[v.y * bitmap.width + v.x] = 0xB3ff00;
+            pixels[v.y * screen.getHeight() + v.x] = 0xB3ff00;
         }
 
-        pixels[head.y * bitmap.width + head.x] = 0x00ff00;
+        pixels[head.y * screen.getWidth() + head.x] = 0x00ff00;
     }
 
-    private void drawMap(Bitmap bitmap) {
-        int[] pixels = bitmap.pixels;
+    private void drawMap(Screen screen) {
+        int[] pixels = screen.pixels();
         for (int i = 0; i < mapSize.y; i++) {
             for (int j = 0; j < mapSize.x; j++) {
                 if (i == 0 || i == mapSize.y-1) {
-                    pixels[i*bitmap.width + j] = 0x0000ff;
+                    pixels[i*screen.getWidth() + j] = 0x0000ff;
                 }
                 if (j == 0 || j == mapSize.x-1) {
-                    pixels[i*bitmap.width + j] = 0x0000ff;
+                    pixels[i*screen.getHeight() + j] = 0x0000ff;
                 }
             }
         }
