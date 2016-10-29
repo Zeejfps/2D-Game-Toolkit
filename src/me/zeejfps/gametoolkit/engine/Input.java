@@ -21,13 +21,13 @@ public class Input {
     private boolean[] keysDown = new boolean[MAX_KEYS];
     private boolean[] keysUp = new boolean[MAX_KEYS];
 
-    private final Display display;
+    private final Game game;
 
     public final Vec2i mousePosition;
 
-    Input(Display display) {
-        this.display = display;
-        Component component = display.canvas;
+    Input(Game game) {
+        this.game = game;
+        Component component = game.display.canvas;
         keyListener = new InputKeyListener();
         mouseListener = new InputMouseListener();
         mouseMotionListener = new InputMouseMotionListener();
@@ -120,9 +120,7 @@ public class Input {
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            //float renderScale = display.getSettings().getRenderScale();
-            //mousePosition.x = (int)(e.getX()* renderScale + 0.5f);
-            //mousePosition.y = (int)(e.getY()* renderScale + 0.5f);
+            //mousePosition.x = e.getX() / game.getPixelsPerUnit();
         }
     }
 

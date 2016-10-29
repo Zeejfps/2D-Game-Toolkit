@@ -18,7 +18,7 @@ public abstract class Game {
         this.pixelsPerUnit = pixelsPerUnit;
         camera = new Camera(this);
         display = new Display(camera);
-        input = new Input(display);
+        input = new Input(this);
         time = new Time();
     }
 

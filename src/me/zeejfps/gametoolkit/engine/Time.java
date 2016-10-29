@@ -18,7 +18,7 @@ public class Time {
     }
 
     protected void tick() {
-        deltaTime = (System.nanoTime() - startTime) / NS_IN_MS;
+        deltaTime = (System.nanoTime() - startTime) / NS_IN_SC;
         startTime = System.nanoTime();
     }
 

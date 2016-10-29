@@ -58,7 +58,7 @@ public class Display {
         }
 
         if (bufferStrat == null) {
-            canvas.createBufferStrategy(2);
+            canvas.createBufferStrategy(3);
         }
         bufferStrat = canvas.getBufferStrategy();
         Graphics2D g = (Graphics2D) bufferStrat.getDrawGraphics();
@@ -69,9 +69,8 @@ public class Display {
 
         // Set hints to "speed down" the rendering
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-        g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Draw the framebuffer
         g.drawImage(camera.getBuffer(), xPos, yPos, scaledWidth, scaledHeight, null);
@@ -117,7 +116,6 @@ public class Display {
 
     private void resize() {
         float aspect = camera.getAspect();
-        if (aspect == 0) return;
         int w = canvas.getWidth();
         int h = canvas.getHeight();
         double xScale= w;
