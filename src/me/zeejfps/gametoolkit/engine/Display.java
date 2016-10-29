@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * Created by Zeejfps on 8/12/2016.
  */
-public class Window {
+public class Display {
 
     protected final JFrame frame;
     protected final Canvas canvas;
@@ -19,12 +19,12 @@ public class Window {
 
     private int xPos, yPos, scaledWidth, scaledHeight;
     private BufferStrategy bufferStrat;
-    private Screen screen;
+    private final Camera camera;
     private float oldAspect;
 
-    public Window(Screen screen){
+    Display(Camera camera){
 
-        this.screen = screen;
+        this.camera = camera;
 
         gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 
@@ -52,9 +52,9 @@ public class Window {
 
     protected void updateFramebuffer() {
 
-        if (screen.getAspectRatio() != oldAspect) {
+        if (camera.getAspect() != oldAspect) {
             resize();
-            oldAspect = screen.getAspectRatio();
+            oldAspect = camera.getAspect();
         }
 
         if (bufferStrat == null) {
@@ -67,14 +67,14 @@ public class Window {
         g.setColor(canvas.getBackground());
         g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        // Set hints to "speed up" the rendering
+        // Set hints to "speed down" the rendering
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
         g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 
         // Draw the framebuffer
-        g.drawImage(screen.getColorBuffer(), xPos, yPos, scaledWidth, scaledHeight, null);
+        g.drawImage(camera.getBuffer(), xPos, yPos, scaledWidth, scaledHeight, null);
         g.dispose();
         bufferStrat.show();
     }
@@ -116,7 +116,7 @@ public class Window {
     }
 
     private void resize() {
-        float aspect = screen.getAspectRatio();
+        float aspect = camera.getAspect();
         if (aspect == 0) return;
         int w = canvas.getWidth();
         int h = canvas.getHeight();

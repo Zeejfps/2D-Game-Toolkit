@@ -11,7 +11,7 @@ public class Time {
     private double startTime;
     private double deltaTime;
 
-    protected Time() {}
+    Time() {}
 
     protected void start() {
         startTime = System.nanoTime();
@@ -22,8 +22,8 @@ public class Time {
         startTime = System.nanoTime();
     }
 
-    public double deltaTime() {
-        return deltaTime;
+    public float deltaTime() {
+        return (float)deltaTime;
     }
 
 }

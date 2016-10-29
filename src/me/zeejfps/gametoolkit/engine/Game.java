@@ -7,16 +7,18 @@ public abstract class Game {
 
     public final Time time;
     public final Input input;
-    public final Screen screen;
-    public final Window window;
+    public final Display display;
+    public final Camera camera;
 
     private double nsPerUpdate;
+    private int pixelsPerUnit;
     private volatile boolean running;
 
-    public Game() {
-        screen = new Screen();
-        window = new Window(screen);
-        input = new Input(window);
+    public Game(int pixelsPerUnit) {
+        this.pixelsPerUnit = pixelsPerUnit;
+        camera = new Camera(this);
+        display = new Display(camera);
+        input = new Input(display);
         time = new Time();
     }
 
@@ -32,9 +34,13 @@ public abstract class Game {
         nsPerUpdate = Time.NS_IN_SC / ups;
     }
 
+    public int getPixelsPerUnit() {
+        return pixelsPerUnit;
+    }
+
     private void init() {
         onInit();
-        window.setVisible(true);
+        display.setVisible(true);
     }
 
     private void loop() {
@@ -77,8 +83,9 @@ public abstract class Game {
     }
 
     private void render() {
+        camera.clear();
         onRender();
-        window.updateFramebuffer();
+        display.updateFramebuffer();
     }
 
     protected abstract void onInit();
