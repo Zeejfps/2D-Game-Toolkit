@@ -1,9 +1,8 @@
 package me.zeejfps.gametoolkit.engine;
 
-import me.zeejfps.gametoolkit.math.Vec2i;
+import java.util.Arrays;
 
-import java.awt.*;
-import java.awt.event.*;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Created by Zeejfps on 6/15/2016.
@@ -12,123 +11,52 @@ public class Input {
 
     private static final int MAX_KEYS = 600;
 
-    private final KeyListener keyListener;
-    private final MouseListener mouseListener;
-    private final MouseMotionListener mouseMotionListener;
-    private final MouseWheelListener mouseWheelListener;
-
-    private boolean[] keys = new boolean[MAX_KEYS];
     private boolean[] keysDown = new boolean[MAX_KEYS];
-    private boolean[] keysUp = new boolean[MAX_KEYS];
+    private boolean[] keysPressed = new boolean[MAX_KEYS];
+    private boolean[] keysReleased = new boolean[MAX_KEYS];
 
     private final Game game;
 
-    public final Vec2i mousePosition;
-
     Input(Game game) {
         this.game = game;
-        Component component = game.display.canvas;
-        keyListener = new InputKeyListener();
-        mouseListener = new InputMouseListener();
-        mouseMotionListener = new InputMouseMotionListener();
-        mouseWheelListener = new InputMouseWheelListener();
-        mousePosition = new Vec2i();
-
-        component.addKeyListener(keyListener);
-        component.addMouseListener(mouseListener);
-        component.addMouseMotionListener(mouseMotionListener);
-        component.addMouseWheelListener(mouseWheelListener);
     }
 
-    public boolean getKey(int keycode) {
-        return keys[keycode];
+    void init() {
+        game.window.addKeyCallback((window, key, scancode, action, mods) -> {
+            switch (action) {
+                case GLFW_REPEAT:
+                case GLFW_PRESS:
+                    keysDown[key] = true;
+                    keysPressed[key] = true;
+                    keysReleased[key] = false;
+                    break;
+                case GLFW_RELEASE:
+                    keysDown[key] = false;
+                    keysPressed[key] = false;
+                    keysReleased[key] = true;
+                    break;
+            }
+        });
+    }
+
+    void pollEvents() {
+        glfwPollEvents();
     }
 
     public boolean getKeyDown(int keycode) {
-        boolean keyDown = keysDown[keycode];
-        keysDown[keycode] = false;
+        return keysDown[keycode];
+    }
+
+    public boolean getKeyPressed(int keycode) {
+        boolean keyDown = keysPressed[keycode];
+        keysPressed[keycode] = false;
         return keyDown;
     }
 
-    public boolean getKeyUp(int keycode) {
-        boolean keyUp = keysUp[keycode];
-        keysUp[keycode] = false;
+    public boolean getKeyReleased(int keycode) {
+        boolean keyUp = keysReleased[keycode];
+        keysReleased[keycode] = false;
         return keyUp;
     }
 
-    private class InputKeyListener implements KeyListener {
-
-        @Override
-        public void keyTyped(KeyEvent e) {}
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (keys[e.getKeyCode()] && !keysDown[e.getKeyCode()]) {
-                keys[e.getKeyCode()] = true;
-            }
-            else {
-                keys[e.getKeyCode()] = true;
-                keysDown[e.getKeyCode()] = true;
-            }
-            keysUp[e.getKeyCode()] = false;
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            keys[e.getKeyCode()] = false;
-            keysDown[e.getKeyCode()] = false;
-            keysUp[e.getKeyCode()] = true;
-        }
-    }
-
-    private class InputMouseListener implements MouseListener {
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-
-        }
-    }
-
-    private class InputMouseMotionListener implements MouseMotionListener {
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            //float renderScale = display.getSettings().getRenderScale();
-            //mousePosition.x = (int)(e.getX() * renderScale + 0.5f);
-            //mousePosition.y = (int)(e.getY() * renderScale + 0.5f);
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent e) {
-            //mousePosition.x = e.getX() / game.getPixelsPerUnit();
-        }
-    }
-
-    private class InputMouseWheelListener implements  MouseWheelListener  {
-
-        @Override
-        public void mouseWheelMoved(MouseWheelEvent e) {
-
-        }
-    }
 }

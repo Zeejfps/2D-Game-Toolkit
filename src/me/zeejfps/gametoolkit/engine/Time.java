@@ -13,7 +13,7 @@ public class Time {
 
     Time() {}
 
-    protected void start() {
+    protected void init() {
         startTime = System.nanoTime();
     }
 
