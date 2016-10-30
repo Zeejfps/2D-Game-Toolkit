@@ -1,4 +1,4 @@
-package me.zeejfps.tests.iso;
+package me.zeejfps.gametoolkit.utils;
 
 import me.zeejfps.gametoolkit.engine.Sprite;
 
@@ -9,11 +9,11 @@ import java.io.IOException;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public class Assets {
+public class AssetLoader {
 
     public static Sprite loadSprite(String path) {
         try {
-            BufferedImage img = ImageIO.read(Assets.class.getClassLoader().getResourceAsStream(path));
+            BufferedImage img = ImageIO.read(AssetLoader.class.getClassLoader().getResourceAsStream(path));
             int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
             return new Sprite(img.getWidth(), img.getHeight(), pixels);
         } catch (IOException e) {
@@ -24,7 +24,7 @@ public class Assets {
 
     public static Sprite[] loadSpriteSheet(String path, int tileWidth, int tileHeight) {
         try {
-            BufferedImage img = ImageIO.read(Assets.class.getClassLoader().getResourceAsStream(path));
+            BufferedImage img = ImageIO.read(AssetLoader.class.getClassLoader().getResourceAsStream(path));
             int w = img.getWidth() / tileWidth;
             int h = img.getHeight() / tileHeight;
 
