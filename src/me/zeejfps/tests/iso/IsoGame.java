@@ -1,6 +1,7 @@
 package me.zeejfps.tests.iso;
 
 import me.zeejfps.gametoolkit.engine.Bitmap;
+import me.zeejfps.gametoolkit.engine.BitmapFont;
 import me.zeejfps.gametoolkit.engine.Game;
 import me.zeejfps.gametoolkit.engine.Sprite;
 import me.zeejfps.gametoolkit.math.Vec2f;
@@ -21,6 +22,7 @@ public class IsoGame extends Game {
     Sprite snake;
     Sprite[] sprites;
     Bitmap bitmap;
+    BitmapFont font;
 
     public IsoGame() {
         setPixeslPerUnit(32);
@@ -33,6 +35,8 @@ public class IsoGame extends Game {
         camera.setAspect(4/3f);
         camera.setSize(3);
 
+        font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
+
         bitmap = AssetLoader.loadBitmap("iso.png");
         s = AssetLoader.loadSprite("iso.png");
         snake = AssetLoader.loadSprite("Snake/head.png");
@@ -41,6 +45,7 @@ public class IsoGame extends Game {
         for (Sprite s : sprites) {
             s.pivot.set(0.5f, 0.7f);
         }
+
     }
 
     long startTime;
@@ -94,27 +99,30 @@ public class IsoGame extends Game {
     @Override
     protected void onRender() {
 
-        /*camera.render(sprites[2], new Vec2f(0, 0));
+        camera.renderString("Hellow World!\nTest", new Vec2i(50, 80), font);
+
+
+        /*camera.renderBitmap(sprites[2], new Vec2f(0, 0));
 
         Vec2i p = camera.worldToScreenPos(new Vec2f(0, 0));
         camera.setPixel(p.x, p.y, 0xff00ff);
         */
 
-        camera.render(bitmap, new Vec2i(80, 80));
-        camera.render(s, new Vec2f(0, 0));
-        camera.render(s, new Vec2f(0.5f, 0.25f));
-        camera.render(s, new Vec2f(0.5f, -0.25f));
-        camera.render(s, new Vec2f(-0.5f, 0.25f));
-        camera.render(s, new Vec2f(-0.5f, -0.25f));
-        camera.render(s, new Vec2f(-0.5f, -0.75f));
-        camera.render(s, new Vec2f(-1f, 0));
-        camera.render(sprites[3], new Vec2f(0, 0));
-        camera.render(sprites[9], new Vec2f(1, 0));
-        camera.render(sprites[i], new Vec2f(-1, y));
+        camera.renderBitmap(bitmap, new Vec2i(80, 80));
+        camera.renderSprite(s, new Vec2f(0, 0));
+        camera.renderSprite(s, new Vec2f(0.5f, 0.25f));
+        camera.renderSprite(s, new Vec2f(0.5f, -0.25f));
+        camera.renderSprite(s, new Vec2f(-0.5f, 0.25f));
+        camera.renderSprite(s, new Vec2f(-0.5f, -0.25f));
+        camera.renderSprite(s, new Vec2f(-0.5f, -0.75f));
+        camera.renderSprite(s, new Vec2f(-1f, 0));
+        camera.renderSprite(sprites[3], new Vec2f(0, 0));
+        camera.renderSprite(sprites[9], new Vec2f(1, 0));
+        camera.renderSprite(sprites[i], new Vec2f(-1, y));
         /*for (int i = -10; i < 10; i++) {
             for (int j = -10; j < 10; j++) {
                 Vec2i p = camera.worldToScreenPos(new Vec2f(j, i));
-                camera.render(s, new Vec2f(j, i));
+                camera.renderBitmap(s, new Vec2f(j, i));
                 //camera.setPixel(p.x, p.y, 0xff00ffff);
             }
         }*/

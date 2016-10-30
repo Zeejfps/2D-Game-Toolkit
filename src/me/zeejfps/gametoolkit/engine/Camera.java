@@ -1,6 +1,5 @@
 package me.zeejfps.gametoolkit.engine;
 
-import me.zeejfps.gametoolkit.engine.callbacks.ResizeCallback;
 import me.zeejfps.gametoolkit.math.Vec2f;
 import me.zeejfps.gametoolkit.math.Vec2i;
 import org.lwjgl.BufferUtils;
@@ -8,12 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
 
@@ -103,14 +97,14 @@ public class Camera {
         fPosYE = (int)Math.round(yScale) + fPosYS;
     }
 
-    public void render(Sprite sprite, Vec2f worldPos) {
+    public void renderSprite(Sprite sprite, Vec2f worldPos) {
         Vec2i screenPos = worldToScreenPos(worldPos);
         screenPos.x -= sprite.pivot.x * sprite.bitmap.width();
         screenPos.y += sprite.pivot.y * sprite.bitmap.height();
-        render(sprite.bitmap, screenPos);
+        renderBitmap(sprite.bitmap, screenPos);
     }
 
-    public void render(Bitmap bitmap, Vec2i screenPos) {
+    public void renderBitmap(Bitmap bitmap, Vec2i screenPos) {
         int xs = screenPos.x < 0 ? 0 : screenPos.x;
         int ys = screenPos.y > fHeight ? fHeight : screenPos.y;
         int xe = screenPos.x + bitmap.width();
@@ -128,9 +122,27 @@ public class Camera {
         }
     }
 
-    public void setPixel(int x, int y, int color) {
-        if (x >= 0 && x < fWidth && y >= 0 && y < fHeight)
-            pixels.put(x+y*fWidth, color);
+    public void renderString(String str, Vec2i screenPos, BitmapFont font) {
+        int xCursor = screenPos.x;
+        int yCursor = screenPos.y;
+        char[] chars = str.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (c == '\n') {
+                yCursor -= font.getLineHeight();
+                xCursor = screenPos.x;
+            }
+            else {
+                BitmapFont.Glyph glyph = font.getChar((int)c);
+                if (glyph == null) return;
+
+                int xRender = xCursor + glyph.xOffset;
+                int yRender = yCursor - glyph.yOffset;
+                renderBitmap(glyph.bitmap, new Vec2i(xRender, yRender));
+
+                xCursor += glyph.xAdvance;
+            }
+        }
     }
 
     public Vec2i worldToScreenPos(Vec2f pos) {
