@@ -32,10 +32,10 @@ public class IsoGame extends Game {
 
         s = Assets.loadSprite("iso.png");
         snake = Assets.loadSprite("Snake/head.png");
-        s.pivot.set(0f, 0f);
+        s.pivot.set(0.5f, 0.5f);
         sprites = Assets.loadSpriteSheet("swordsman.png", 72, 72);
         for (Sprite s : sprites) {
-            s.pivot.set(0.5f, 1f);
+            s.pivot.set(0.5f, 0.7f);
         }
     }
 
@@ -76,10 +76,13 @@ public class IsoGame extends Game {
     @Override
     protected void onRender() {
 
-        //camera.render(snake, new Vec2f(0, 0));
+        /*camera.render(sprites[2], new Vec2f(0, 0));
+
+        Vec2i p = camera.worldToScreenPos(new Vec2f(0, 0));
+        camera.setPixel(p.x, p.y, 0xff00ff);
+        */
 
         camera.render(s, new Vec2f(0, 0));
-        camera.render(s, new Vec2f(1, 0));
         camera.render(s, new Vec2f(0.5f, 0.25f));
         camera.render(s, new Vec2f(0.5f, -0.25f));
         camera.render(s, new Vec2f(-0.5f, 0.25f));
@@ -88,6 +91,7 @@ public class IsoGame extends Game {
         camera.render(s, new Vec2f(-1f, 0));
         camera.render(sprites[4], new Vec2f(0, 0));
         camera.render(sprites[9], new Vec2f(1, 0));
+        camera.render(sprites[13], new Vec2f(-1, 0));
         /*for (int i = -10; i < 10; i++) {
             for (int j = -10; j < 10; j++) {
                 Vec2i p = camera.worldToScreenPos(new Vec2f(j, i));

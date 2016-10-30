@@ -5,10 +5,13 @@ import me.zeejfps.gametoolkit.math.Vec2f;
 import me.zeejfps.gametoolkit.math.Vec2i;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 
@@ -55,7 +58,7 @@ public class Camera {
 
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB8, fWidth, fHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, 0);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB8, fWidth, fHeight, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, 0);
 
         GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
@@ -72,7 +75,7 @@ public class Camera {
 
     void render() {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-        GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, fWidth, fHeight, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, pixels);
+        GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, fWidth, fHeight, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, pixels);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 
         GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, framebuffer);
@@ -103,7 +106,7 @@ public class Camera {
     public void render(Sprite sprite, Vec2f worldPos) {
         Vec2i screenPos = worldToScreenPos(worldPos);
         screenPos.x -= sprite.pivot.x * sprite.width;
-        screenPos.y -= (1 - sprite.pivot.y) * sprite.height;
+        screenPos.y += sprite.pivot.y * sprite.height;
 
         // Clip Rect
         int xs = screenPos.x < 0 ? 0 : screenPos.x;
