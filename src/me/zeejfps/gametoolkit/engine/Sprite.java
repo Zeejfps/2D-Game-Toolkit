@@ -7,19 +7,16 @@ import me.zeejfps.gametoolkit.math.Vec2f;
  */
 public class Sprite {
 
-    public final int width, height;
-    public final int[] pixels;
     public final Vec2f pivot;
+    public Bitmap bitmap;
 
-    public Sprite(int width, int height) {
-        this(width, height, new int[width*height]);
+    public Sprite(Bitmap bitmap) {
+        this(bitmap, new Vec2f());
     }
 
-    public Sprite(int width, int height, int[] pixels) {
-        this.width = width;
-        this.height = height;
-        this.pixels = pixels;
-        this.pivot = new Vec2f();
+    public Sprite(Bitmap bitmap, Vec2f pivot) {
+        this.bitmap = bitmap;
+        this.pivot = pivot;
     }
 
 }

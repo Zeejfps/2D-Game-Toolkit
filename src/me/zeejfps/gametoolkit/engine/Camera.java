@@ -105,21 +105,23 @@ public class Camera {
 
     public void render(Sprite sprite, Vec2f worldPos) {
         Vec2i screenPos = worldToScreenPos(worldPos);
-        screenPos.x -= sprite.pivot.x * sprite.width;
-        screenPos.y += sprite.pivot.y * sprite.height;
+        screenPos.x -= sprite.pivot.x * sprite.bitmap.width();
+        screenPos.y += sprite.pivot.y * sprite.bitmap.height();
+        render(sprite.bitmap, screenPos);
+    }
 
-        // Clip Rect
+    public void render(Bitmap bitmap, Vec2i screenPos) {
         int xs = screenPos.x < 0 ? 0 : screenPos.x;
         int ys = screenPos.y > fHeight ? fHeight : screenPos.y;
-        int xe = screenPos.x + sprite.width;
+        int xe = screenPos.x + bitmap.width();
         xe = xe > fWidth  ? fWidth : xe;
-        int ye = screenPos.y - sprite.height;
+        int ye = screenPos.y - bitmap.height();
         ye = ye < 0 ? 0 : ye;
 
         int x, y, srcx, srcy;
         for (srcy = -(ys-screenPos.y), y = ys-1; y >= ye; y--, srcy++) {
             for (srcx = xs-screenPos.x, x = xs; x < xe; x++, srcx++) {
-                int srcPix = sprite.pixels[srcx+srcy*sprite.width];
+                int srcPix = bitmap.pixel(srcx+srcy*bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     pixels.put(x+y*fWidth, srcPix);
             }

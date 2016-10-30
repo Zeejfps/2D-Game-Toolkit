@@ -1,8 +1,10 @@
 package me.zeejfps.tests.iso;
 
+import me.zeejfps.gametoolkit.engine.Bitmap;
 import me.zeejfps.gametoolkit.engine.Game;
 import me.zeejfps.gametoolkit.engine.Sprite;
 import me.zeejfps.gametoolkit.math.Vec2f;
+import me.zeejfps.gametoolkit.math.Vec2i;
 import me.zeejfps.gametoolkit.utils.AssetLoader;
 
 import java.awt.event.KeyEvent;
@@ -18,6 +20,7 @@ public class IsoGame extends Game {
     Sprite s;
     Sprite snake;
     Sprite[] sprites;
+    Bitmap bitmap;
 
     public IsoGame() {
         setPixeslPerUnit(32);
@@ -30,6 +33,7 @@ public class IsoGame extends Game {
         camera.setAspect(4/3f);
         camera.setSize(3);
 
+        bitmap = AssetLoader.loadBitmap("iso.png");
         s = AssetLoader.loadSprite("iso.png");
         snake = AssetLoader.loadSprite("Snake/head.png");
         s.pivot.set(0.5f, 0.5f);
@@ -56,7 +60,6 @@ public class IsoGame extends Game {
             }
             t = 0;
         }
-        System.out.println(time.deltaTime());
         y -= time.deltaTime() * 0.001f;
     }
 
@@ -97,6 +100,7 @@ public class IsoGame extends Game {
         camera.setPixel(p.x, p.y, 0xff00ff);
         */
 
+        camera.render(bitmap, new Vec2i(80, 80));
         camera.render(s, new Vec2f(0, 0));
         camera.render(s, new Vec2f(0.5f, 0.25f));
         camera.render(s, new Vec2f(0.5f, -0.25f));

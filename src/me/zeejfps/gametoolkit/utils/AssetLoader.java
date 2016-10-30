@@ -1,5 +1,6 @@
 package me.zeejfps.gametoolkit.utils;
 
+import me.zeejfps.gametoolkit.engine.Bitmap;
 import me.zeejfps.gametoolkit.engine.Sprite;
 
 import javax.imageio.ImageIO;
@@ -11,15 +12,25 @@ import java.io.IOException;
  */
 public class AssetLoader {
 
-    public static Sprite loadSprite(String path) {
+    public static Bitmap loadBitmap(String path) {
         try {
-            BufferedImage img = ImageIO.read(AssetLoader.class.getClassLoader().getResourceAsStream(path));
-            int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
-            return new Sprite(img.getWidth(), img.getHeight(), pixels);
+            return Bitmap.load(path);
         } catch (IOException e) {
+            System.err.println("Failed to load bitmap");
             e.printStackTrace();
+            return new Bitmap(0, 0, new int[0]);
         }
-        return new Sprite(10, 10);
+    }
+
+    public static Sprite loadSprite(String path) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Bitmap.load(path);
+        } catch (IOException e) {
+            System.err.println("Failed to load sprite");
+            bitmap = new Bitmap(0, 0, new int[0]);
+        }
+        return new Sprite(bitmap);
     }
 
     public static Sprite[] loadSpriteSheet(String path, int tileWidth, int tileHeight) {
@@ -32,7 +43,8 @@ public class AssetLoader {
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int[] pixels = img.getRGB(x*tileWidth, y*tileHeight, tileWidth, tileHeight, null, 0, tileWidth);
-                    sprites[x+y*w] = new Sprite(tileWidth, tileHeight, pixels);
+                    Bitmap bitmap = new Bitmap(tileWidth, tileHeight, pixels);
+                    sprites[x+y*w] = new Sprite(bitmap);
                 }
             }
             return sprites;
