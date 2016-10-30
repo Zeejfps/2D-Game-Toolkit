@@ -28,12 +28,12 @@ public class IsoGame extends Game {
         setPixeslPerUnit(32);
 
         window.setSize(640, 480);
-        window.setTitle("Test Game | FPS: 0");
+        window.setTitle("Test Game");
         window.setResizable(false);
 
-        camera.setClearColor(0);
+        camera.setClearColor(0x00ffff);
         camera.setAspect(4/3f);
-        camera.setSize(3);
+        camera.setSize(4);
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
 
@@ -96,10 +96,11 @@ public class IsoGame extends Game {
     int fps=0;
     int i = 4;
     float y = 0;
+    String fpsStr = "FPS: 666";
     @Override
     protected void onRender() {
 
-        camera.renderString("Hellow World!\nTest", new Vec2i(50, 80), font);
+
 
 
         /*camera.renderBitmap(sprites[2], new Vec2f(0, 0));
@@ -108,7 +109,7 @@ public class IsoGame extends Game {
         camera.setPixel(p.x, p.y, 0xff00ff);
         */
 
-        camera.renderBitmap(bitmap, new Vec2i(80, 80));
+        //camera.renderBitmap(bitmap, new Vec2i(80, 80));
         camera.renderSprite(s, new Vec2f(0, 0));
         camera.renderSprite(s, new Vec2f(0.5f, 0.25f));
         camera.renderSprite(s, new Vec2f(0.5f, -0.25f));
@@ -126,10 +127,16 @@ public class IsoGame extends Game {
                 //camera.setPixel(p.x, p.y, 0xff00ffff);
             }
         }*/
+        camera.renderString(
+                fpsStr,
+                new Vec2i(0, camera.getFramebufferHeight()),
+                font,
+                0
+        );
 
         fps++;
         if (System.currentTimeMillis() - startTime >= 1000) {
-            window.setTitle("Test Game | FPS: " + fps);
+            fpsStr = "FPS: " + fps;
             fps = 0;
             startTime = System.currentTimeMillis();
         }

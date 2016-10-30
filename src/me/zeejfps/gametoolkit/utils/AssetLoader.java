@@ -18,7 +18,7 @@ public class AssetLoader {
         try {
             return BitmapFont.load(path);
         } catch (IOException e) {
-            return new BitmapFont(new HashMap<>(), 0);
+            return new BitmapFont(new HashMap<>(), new HashMap<>(), 0);
         }
     }
 

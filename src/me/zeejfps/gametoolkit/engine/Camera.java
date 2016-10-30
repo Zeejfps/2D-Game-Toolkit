@@ -104,17 +104,17 @@ public class Camera {
         renderBitmap(sprite.bitmap, screenPos);
     }
 
-    public void renderBitmap(Bitmap bitmap, Vec2i screenPos) {
-        int xs = screenPos.x < 0 ? 0 : screenPos.x;
-        int ys = screenPos.y > fHeight ? fHeight : screenPos.y;
-        int xe = screenPos.x + bitmap.width();
+    public void renderBitmap(Bitmap bitmap, int xPos, int yPos) {
+        int xs = xPos < 0 ? 0 : xPos;
+        int ys = yPos > fHeight ? fHeight : yPos;
+        int xe = xPos + bitmap.width();
         xe = xe > fWidth  ? fWidth : xe;
-        int ye = screenPos.y - bitmap.height();
+        int ye = yPos - bitmap.height();
         ye = ye < 0 ? 0 : ye;
 
         int x, y, srcx, srcy;
-        for (srcy = -(ys-screenPos.y), y = ys-1; y >= ye; y--, srcy++) {
-            for (srcx = xs-screenPos.x, x = xs; x < xe; x++, srcx++) {
+        for (srcy = -(ys-yPos), y = ys-1; y >= ye; y--, srcy++) {
+            for (srcx = xs-xPos, x = xs; x < xe; x++, srcx++) {
                 int srcPix = bitmap.pixel(srcx+srcy*bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     pixels.put(x+y*fWidth, srcPix);
@@ -122,12 +122,21 @@ public class Camera {
         }
     }
 
-    public void renderString(String str, Vec2i screenPos, BitmapFont font) {
+    public void renderBitmap(Bitmap bitmap, Vec2i screenPos) {
+        renderBitmap(bitmap, screenPos.x, screenPos.y);
+    }
+
+    public void renderString(String str, Vec2i screenPos, BitmapFont font, int color) {
         int xCursor = screenPos.x;
         int yCursor = screenPos.y;
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
+            int kerning = 0;
+            if (i > 0) {
+                char prev = chars[i-1];
+                kerning += font.getKerning((int)prev, (int)c);
+            }
             if (c == '\n') {
                 yCursor -= font.getLineHeight();
                 xCursor = screenPos.x;
@@ -136,11 +145,29 @@ public class Camera {
                 BitmapFont.Glyph glyph = font.getChar((int)c);
                 if (glyph == null) return;
 
-                int xRender = xCursor + glyph.xOffset;
+                int xRender = xCursor + glyph.xOffset + kerning;
                 int yRender = yCursor - glyph.yOffset;
-                renderBitmap(glyph.bitmap, new Vec2i(xRender, yRender));
+                renderGlyph(glyph, xRender, yRender, color);
 
                 xCursor += glyph.xAdvance;
+            }
+        }
+    }
+
+    public void renderGlyph(BitmapFont.Glyph glyph, int xPos, int yPos, int color){
+        int xs = xPos < 0 ? 0 : xPos;
+        int ys = yPos > fHeight ? fHeight : yPos;
+        int xe = xPos + glyph.bitmap.width();
+        xe = xe > fWidth  ? fWidth : xe;
+        int ye = yPos - glyph.bitmap.height();
+        ye = ye < 0 ? 0 : ye;
+
+        int x, y, srcx, srcy;
+        for (srcy = -(ys-yPos), y = ys-1; y >= ye; y--, srcy++) {
+            for (srcx = xs-xPos, x = xs; x < xe; x++, srcx++) {
+                int srcPix = glyph.bitmap.pixel(srcx+srcy*glyph.bitmap.width());
+                if ((0xff000000 & srcPix) != 0)
+                    pixels.put(x+y*fWidth, color);
             }
         }
     }
@@ -149,6 +176,14 @@ public class Camera {
         int x = (int)(fWidth * 0.5f + pos.x*game.getPixelsPerUnit() - position.x);
         int y = (int)(fHeight * 0.5f + pos.y*game.getPixelsPerUnit() - position.y);
         return new Vec2i(x, y);
+    }
+
+    public int getFramebufferWidth() {
+        return fWidth;
+    }
+
+    public int getFramebufferHeight() {
+        return fHeight;
     }
 
     public void setSize(float size) {

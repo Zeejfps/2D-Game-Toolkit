@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,10 +15,12 @@ import java.util.regex.Pattern;
  */
 public class BitmapFont {
 
+    private final Map<KeyPair, Integer> kernings;
     private final Map<Integer, Glyph> fontChars;
     private final int lineHeight;
 
-    public BitmapFont(Map<Integer, Glyph> fontChars, int lineHeight) {
+    public BitmapFont(Map<Integer, Glyph> fontChars, Map<KeyPair, Integer> kernings, int lineHeight) {
+        this.kernings = kernings;
         this.fontChars = fontChars;
         this.lineHeight = lineHeight;
     }
@@ -28,6 +31,14 @@ public class BitmapFont {
 
     public Glyph getChar(int id) {
         return fontChars.get(id);
+    }
+
+    public int getKerning(int a, int b) {
+        Integer k = kernings.get(new KeyPair(a, b));
+        if (k == null) {
+            return 0;
+        }
+        return k;
     }
 
     public static class Glyph {
@@ -42,6 +53,30 @@ public class BitmapFont {
             this.bitmap = bitmap;
         }
 
+    }
+
+    static class KeyPair {
+
+        public final int first, second;
+
+        public KeyPair(int first, int second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof KeyPair) {
+                KeyPair k = (KeyPair)obj;
+                return k.first == first && k.second == second;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return first ^ second;
+        }
     }
 
     public static BitmapFont load(String path) throws IOException {
@@ -113,8 +148,32 @@ public class BitmapFont {
             }
 
         }
+
+        Map<KeyPair, Integer> kernings = new HashMap<>();
+        Map<String, String> kerningsMap = new HashMap<>();
+        // Read in the kernings
+        String kerningLine = scanner.nextLine();
+        matcher = pattern.matcher(kerningLine);
+        addToMap(matcher, kerningsMap);
+
+        // Read each kerning
+        int numKernings = Integer.parseInt(kerningsMap.get("count"));
+        for (int i = 0; i < numKernings; i++) {
+
+            Map<String, String> k = new HashMap<>();
+            String line = scanner.nextLine();
+            matcher = pattern.matcher(line);
+            addToMap(matcher, k);
+
+            int first = Integer.parseInt(k.get("first"));
+            int second = Integer.parseInt(k.get("second"));
+            int amount = Integer.parseInt(k.get("amount"));
+
+            kernings.put(new KeyPair(first, second), amount);
+        }
+
         int lineHeight = Integer.parseInt(commonMap.get("lineHeight"));
-        return new BitmapFont(fontChars, lineHeight);
+        return new BitmapFont(fontChars, kernings, lineHeight);
     }
 
     private static void addToMap(Matcher m, Map<String, String> map) {
