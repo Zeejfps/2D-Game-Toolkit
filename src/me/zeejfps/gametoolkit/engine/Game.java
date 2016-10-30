@@ -59,6 +59,7 @@ public abstract class Game {
         double lag = 0, current, elapsed;
         double previous = System.nanoTime();
 
+        time.init();
         while(running) {
             input.pollEvents();
 

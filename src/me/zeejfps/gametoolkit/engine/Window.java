@@ -20,6 +20,7 @@ public class Window {
     private List<KeyCallback> keyCallbacks = new ArrayList<>();
 
     private long window;
+    private boolean initialized;
 
     private int width, height;
     private String title;
@@ -67,31 +68,46 @@ public class Window {
                 }
             }
         });
+        glfwSetWindowCloseCallback(window, new GLFWWindowCloseCallback() {
+            @Override
+            public void invoke(long l) {
+                close();
+                System.exit(0);
+            }
+        });
 
         glfwMakeContextCurrent(window);
         glfwSwapInterval(0);
         GL.createCapabilities();
+        initialized = true;
     }
 
     void swapBuffers() {
         glfwSwapBuffers(window);
     }
 
-    void resize() {
-
-    }
-
     public void show() {
         glfwShowWindow(window);
+    }
+
+    public void close() {
+        glfwHideWindow(window);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
+        if (initialized)
+            glfwSetWindowSize(width, width, height);
     }
 
     public void setTitle(String title) {
         this.title = title;
+        if (initialized)
+            glfwSetWindowTitle(window, title);
     }
 
     public void setResizable(boolean resizable) {
