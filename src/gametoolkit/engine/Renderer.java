@@ -1,30 +1,28 @@
 package gametoolkit.engine;
 
-import gametoolkit.engine.backend.GLFWWindow;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import sun.plugin.dom.exception.InvalidStateException;
 
 /**
  * Created by root on 10/31/16.
  */
 public class Renderer {
 
-    private GLFWWindow window;
-    private Camera camera;
-    private Framebuffer fb;
+    private final Window window;
+    private final Camera camera;
+    private final Framebuffer fb;
 
     private int fPosXS, fPosYS;
     private int fPosXE, fPosYE;
     private boolean drawing;
 
-    public Renderer(GLFWWindow window, Camera camera) {
+    public Renderer(Window window, Camera camera) {
         this.window = window;
         this.camera = camera;
         this.fb = camera.getFramebuffer();
-        window.addResizeCallback((window1, width, height) -> {
+        window.addSizeCallback((window1, width, height) -> {
             double xScale= width;
             double yScale= width / camera.getAspect();
             if (yScale > height) {
@@ -39,11 +37,11 @@ public class Renderer {
     }
 
     private void checkIsDrawing() {
-        if (!drawing) throw new InvalidStateException("Must call Renderer.begin() first");
+        if (!drawing) throw new IllegalStateException("Must call Renderer.begin() first");
     }
 
     public void begin()  {
-        if (drawing) throw new InvalidStateException("Must call Render.end()");
+        if (drawing) throw new IllegalStateException("Must call Render.end()");
         drawing = true;
         fb.clear(camera.getClearColor());
     }

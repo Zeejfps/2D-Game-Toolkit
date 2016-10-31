@@ -18,23 +18,12 @@ public class Framebuffer {
     private int textureHandle;
     private int framebufferHandle;
 
-    public Framebuffer(int width, int height) {
+    Framebuffer(int width, int height) {
         this.width = width;
         this.height = height;
         pixels = BufferUtils.createIntBuffer(width*height);
-
         framebufferHandle = GL30.glGenFramebuffers();
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferHandle);
-
-        textureHandle = GL11.glGenTextures();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureHandle);
-
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB8, width, height, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, 0);
-
-        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, textureHandle, 0);
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        resize(width, height);
     }
 
     public void update() {
@@ -50,7 +39,21 @@ public class Framebuffer {
     }
 
     public void resize(int width, int height) {
-        // Handle recreating it
+        this.width = width;
+        this.height = height;
+
+        GL11.glDeleteTextures(textureHandle);
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferHandle);
+
+        textureHandle = GL11.glGenTextures();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureHandle);
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB8, width, height, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, 0);
+
+        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, textureHandle, 0);
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
     }
 
     public IntBuffer pixels() {

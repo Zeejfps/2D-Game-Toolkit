@@ -1,6 +1,5 @@
-package gametoolkit.engine.backend;
+package gametoolkit.engine;
 
-import gametoolkit.engine.Renderer;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -8,14 +7,13 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * Created by root on 10/31/16.
  */
-public class GLFWApp {
+public class App {
 
     private boolean running;
-    private final GLFWAppListener appListener;
-
     private double nsPerUpdate;
+    private final Game appListener;
 
-    public GLFWApp(GLFWAppListener appListener, GLFWAppConfig config) {
+    public App(Game appListener, Config config) {
         this.appListener = appListener;
         nsPerUpdate = config.nsPerUpdate;
 

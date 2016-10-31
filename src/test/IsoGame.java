@@ -1,7 +1,6 @@
 package test;
 
 import gametoolkit.engine.*;
-import gametoolkit.engine.backend.*;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import gametoolkit.utils.AssetLoader;
@@ -12,7 +11,7 @@ import java.util.Random;
 /**
  * Created by Zeejfps on 10/28/2016.
  */
-public class IsoGame implements GLFWAppListener {
+public class IsoGame extends Game {
 
     private static Random rand = new Random(System.nanoTime());
 
@@ -30,28 +29,28 @@ public class IsoGame implements GLFWAppListener {
             {6, 13, 13, 13, 13, 13, 13, 13,  6},
             {6, 13, 13, 13, 13, 13, 13, 13,  6},
             {6, 13, 13, 13, 13, 13, 13, 13,  6},
-            {6,  0,  0,  0,  0,  0,  0,  0,  6},
+            {6,  3,  0,  0,  0,  0,  0,  0,  6},
             {6,  6,  6,  6,  6,  6,  6,  6,  6},
     };
 
-    private GLFWWindow window;
+    private Window window;
     private Renderer renderer;
     private Camera camera;
-    private GLFWInputHandler input;
+    private Input input;
     private Time time;
     long startTime;
 
-    private GLFWApp app;
+    private App app;
 
     @Override
-    public void onCreate(GLFWApp app) {
+    public void onCreate(App app) {
         this.app = app;
-        window = new GLFWWindow(640, 480, "Test");
-        window.enableVSync(false);
+        window = new Window(640, 480, "Test");
+        window.enableVSync(true);
         camera = new Camera(6f, 4/3f, 16);
         camera.setClearColor(0x00ffff);
         renderer = new Renderer(window, camera);
-        input = new GLFWInputHandler(window);
+        input = new Input(window);
         time = new Time();
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
@@ -139,13 +138,9 @@ public class IsoGame implements GLFWAppListener {
     }
 
     public static void main(String[] args) {
-        GLFWAppConfig config = new GLFWAppConfig();
+        Config config = new Config();
         config.setFixedUpdateInterval(60);
-        config.setApplicationSize(640, 480);
-        config.setApplicationTitle("Test Game");
-        config.setResizable(true);
-        config.enableVSync(true);
-        GLFWApp app = new GLFWApp(new IsoGame(), config);
+        App app = new App(new IsoGame(), config);
     }
 
 }

@@ -1,7 +1,7 @@
-package gametoolkit.engine.backend;
+package gametoolkit.engine;
 
-import gametoolkit.engine.callbacks.KeyCallback;
-import gametoolkit.engine.callbacks.ResizeCallback;
+import gametoolkit.engine.listeners.InputListener;
+import gametoolkit.engine.listeners.SizeCallback;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
@@ -15,13 +15,23 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public class GLFWWindow {
+public class Window {
 
-    private List<ResizeCallback> resizeCallbacks = new ArrayList<>();
-    private List<KeyCallback> keyCallbacks = new ArrayList<>();
+    // Callback lists
+    private final List<SizeCallback> sizeCallbacks = new ArrayList<>();
+    private final List<InputListener> inputListeners = new ArrayList<>();
 
     private final long window;
     private final GLCapabilities capabilities;
+
+    private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
+        @Override
+        public void invoke(long window, double x, double y) {
+            for (InputListener c : inputListeners) {
+                c.onCursorMove(Window.this, x, y);
+            }
+        }
+    };
 
     private GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
         @Override
@@ -43,8 +53,8 @@ public class GLFWWindow {
     private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
         @Override
         public void invoke(long window, int key, int scancode, int action, int mods) {
-            for (KeyCallback c : keyCallbacks) {
-                c.onKey(GLFWWindow.this, key, scancode, action, mods);
+            for (InputListener c : inputListeners) {
+                c.onKey(Window.this, key, scancode, action, mods);
             }
         }
     };
@@ -52,13 +62,13 @@ public class GLFWWindow {
     private GLFWWindowSizeCallback sizeCallback = new GLFWWindowSizeCallback() {
         @Override
         public void invoke(long window, int width, int height) {
-            for (ResizeCallback c : resizeCallbacks) {
-                c.onResize(GLFWWindow.this, width, height);
+            for (SizeCallback c : sizeCallbacks) {
+                c.onResize(Window.this, width, height);
             }
         }
     };
 
-    public GLFWWindow(int width, int height, String title, Hint... hints) {
+    public Window(int width, int height, String title, Hint... hints) {
         // Setup window hints
         for (Hint hint : hints) {
             glfwWindowHint(hint.hint, hint.value);
@@ -86,6 +96,7 @@ public class GLFWWindow {
         glfwSetWindowSizeCallback(window, sizeCallback);
         glfwSetKeyCallback(window, keyCallback);
         glfwSetWindowCloseCallback(window, closeCallback);
+        glfwSetCursorPosCallback(window, cursorPosCallback);
     }
 
     public static class Hint {
@@ -129,19 +140,19 @@ public class GLFWWindow {
         glfwSetWindowTitle(window, title);
     }
 
-    public void addResizeCallback(ResizeCallback callback) {
-        resizeCallbacks.add(callback);
+    public void addSizeCallback(SizeCallback callback) {
+        sizeCallbacks.add(callback);
     }
 
-    public void removeResizeCallback(ResizeCallback callback) {
-        resizeCallbacks.remove(callback);
+    public void removeSizeCallback(SizeCallback callback) {
+        sizeCallbacks.remove(callback);
     }
 
-    public void addKeyCallback(KeyCallback callback) {
-        keyCallbacks.add(callback);
+    public void addInputListener(InputListener callback) {
+        inputListeners.add(callback);
     }
 
-    public void removeKeyCallback(KeyCallback callback) {
-        keyCallbacks.remove(callback);
+    public void removeInputListener(InputListener callback) {
+        inputListeners.remove(callback);
     }
 }
