@@ -15,7 +15,7 @@ import java.nio.IntBuffer;
 public final class Camera {
 
     public final Vec2f position;
-    public final Window window;
+    public final Display display;
 
     private float size;
     private float aspect;
@@ -29,8 +29,8 @@ public final class Camera {
     private int fPosXS, fPosYS;
     private int fPosXE, fPosYE;
 
-    public Camera(float size, float aspect, int pixelsPerUnit, Window window) {
-        this.window = window;
+    public Camera(float size, float aspect, int pixelsPerUnit, Display display) {
+        this.display = display;
         this.position = new Vec2f();
         setSize(size);
         setAspect(aspect);
@@ -53,10 +53,10 @@ public final class Camera {
         GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
-        window.addResizeCallback(this::resize);
+        display.addResizeCallback(this::resize);
     }
 
-    void resize(Window window, int width, int height) {
+    void resize(Display display, int width, int height) {
         double xScale= width;
         double yScale= width / aspect;
         if (yScale > height) {
@@ -76,7 +76,7 @@ public final class Camera {
         }
     }
 
-    public void render() {
+    void render() {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
         GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, fWidth, fHeight, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, pixels);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);

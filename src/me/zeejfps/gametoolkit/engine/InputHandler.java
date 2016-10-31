@@ -13,8 +13,8 @@ public class InputHandler {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    public InputHandler(Window window) {
-        window.addKeyCallback((w, key, scancode, action, mods) -> {
+    public InputHandler(Display display) {
+        display.addKeyCallback((w, key, scancode, action, mods) -> {
             switch (action) {
                 case GLFW_REPEAT:
                 case GLFW_PRESS:

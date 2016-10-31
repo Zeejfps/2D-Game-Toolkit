@@ -15,7 +15,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public final class Window {
+public final class Display {
 
     private static boolean GLFW_INITIALIZED;
 
@@ -25,7 +25,7 @@ public final class Window {
     private final long window;
     private GLCapabilities capabilities = null;
 
-    public Window(int width, int height, String title, Hint... hints) {
+    public Display(int width, int height, String title, Hint... hints) {
         // Initialize glfw
         if (!GLFW_INITIALIZED) {
             GLFWErrorCallback.createPrint(System.err).set();
@@ -35,18 +35,18 @@ public final class Window {
             GLFW_INITIALIZED = true;
         }
 
-        // Setup window hints
+        // Setup display hints
         for (Hint hint : hints) {
             glfwWindowHint(hint.hint, hint.value);
         }
 
-        // Create the glfw window
+        // Create the glfw display
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL) {
-            throw new RuntimeException("Failed to create GLFW window");
+            throw new RuntimeException("Failed to create GLFW display");
         }
 
-        // Center the window
+        // Center the display
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(
                 window,
@@ -63,7 +63,7 @@ public final class Window {
             @Override
             public void invoke(long window, int width, int height) {
                 for (ResizeCallback c : resizeCallbacks) {
-                    c.onResize(Window.this, width, height);
+                    c.onResize(Display.this, width, height);
                 }
             }
         });
@@ -71,7 +71,7 @@ public final class Window {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 for (KeyCallback c : keyCallbacks) {
-                    c.onKey(Window.this, key, scancode, action, mods);
+                    c.onKey(Display.this, key, scancode, action, mods);
                 }
             }
         });
@@ -98,7 +98,8 @@ public final class Window {
         glfwShowWindow(window);
     }
 
-    public void swapBuffers() {
+    public void swapBuffers(Camera camera) {
+        camera.render();
         glfwSwapBuffers(window);
     }
 

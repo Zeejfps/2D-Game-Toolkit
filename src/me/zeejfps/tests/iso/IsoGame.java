@@ -36,22 +36,22 @@ public class IsoGame extends Game {
             {6,  6,  6,  6,  6,  6,  6,  6,  6},
     };
 
-    private Window window;
+    private Display display;
     private Camera camera;
     private InputHandler input;
 
     public IsoGame() {
-        window = new Window(
-                640, 480,       // Window size
-                "Hello",        // Window title
-                new Window.Hint(GLFW_VISIBLE, GLFW_FALSE)
+        display = new Display(
+                640, 480,       // Display size
+                "Hello",        // Display title
+                new Display.Hint(GLFW_VISIBLE, GLFW_FALSE)
         );
         camera = new Camera(
                 4f, 4/3f,       // Size and Aspect
                 16,             // Pixels Per Unit
-                window
+                display
         );
-        input = new InputHandler(window);
+        input = new InputHandler(display);
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
         bitmap = AssetLoader.loadBitmap("iso.png");
@@ -68,7 +68,7 @@ public class IsoGame extends Game {
     long startTime;
     @Override
     protected void onInit() {
-        window.show();
+        display.show();
         startTime = System.currentTimeMillis();
     }
 
@@ -83,26 +83,25 @@ public class IsoGame extends Game {
             }
             t = 0;
         }
-
     }
 
     double t;
     boolean ss;
     @Override
     protected void onFixedUpdate() {
-        y -= time.deltaTime() * 0.001f;
+        y -= 0.05f;
         if (input.getKeyDown(KeyEvent.VK_A)) {
-            camera.position.x -= time.deltaTime() * 0.1f;
+            camera.position.x -= 1f;
         }
         else if (input.getKeyDown(KeyEvent.VK_D)) {
-            camera.position.x += time.deltaTime() * 0.1f;
+            camera.position.x += 1f;
         }
 
         if (input.getKeyDown(KeyEvent.VK_W)) {
-            camera.position.y += time.deltaTime() * 0.1f;
+            camera.position.y += 1f;
         }
         else if (input.getKeyDown(KeyEvent.VK_S)) {
-            camera.position.y -= time.deltaTime()  * 0.1f;
+            camera.position.y -= 1f;
         }
 
         if (input.getKeyPressed(KeyEvent.VK_SPACE)) {
@@ -124,6 +123,8 @@ public class IsoGame extends Game {
             }
         }
 
+        camera.renderSprite(sprites[i], new Vec2f(0, y));
+
         camera.renderString(fpsStr,new Vec2i(0, camera.getFramebufferHeight()),font,0);
         fps++;
         if (System.currentTimeMillis() - startTime >= 1000) {
@@ -132,8 +133,7 @@ public class IsoGame extends Game {
             startTime = System.currentTimeMillis();
         }
 
-        camera.render();
-        window.swapBuffers();
+        display.swapBuffers(camera);
     }
 
     public static void main(String[] args) {
