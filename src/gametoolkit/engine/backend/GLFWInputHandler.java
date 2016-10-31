@@ -1,13 +1,13 @@
-package gametoolkit.engine;
+package gametoolkit.engine.backend;
 
-import gametoolkit.engine.glfw.GLFWWindow;
+import gametoolkit.engine.backend.GLFWWindow;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Created by Zeejfps on 6/15/2016.
  */
-public class Input {
+public class GLFWInputHandler {
 
     private static final int MAX_KEYS = 600;
 
@@ -15,7 +15,7 @@ public class Input {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    public Input(GLFWWindow window) {
+    public GLFWInputHandler(GLFWWindow window) {
         window.addKeyCallback((w, key, scancode, action, mods) -> {
             switch (action) {
                 case GLFW_REPEAT:

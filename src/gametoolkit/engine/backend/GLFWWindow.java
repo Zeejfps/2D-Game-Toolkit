@@ -1,4 +1,4 @@
-package gametoolkit.engine.glfw;
+package gametoolkit.engine.backend;
 
 import gametoolkit.engine.callbacks.KeyCallback;
 import gametoolkit.engine.callbacks.ResizeCallback;
@@ -15,7 +15,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public final class GLFWWindow {
+public class GLFWWindow {
 
     private List<ResizeCallback> resizeCallbacks = new ArrayList<>();
     private List<KeyCallback> keyCallbacks = new ArrayList<>();
@@ -33,13 +33,38 @@ public final class GLFWWindow {
         }
     };
 
+    private GLFWWindowCloseCallback closeCallback = new GLFWWindowCloseCallback() {
+        @Override
+        public void invoke(long window) {
+
+        }
+    };
+
+    private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
+        @Override
+        public void invoke(long window, int key, int scancode, int action, int mods) {
+            for (KeyCallback c : keyCallbacks) {
+                c.onKey(GLFWWindow.this, key, scancode, action, mods);
+            }
+        }
+    };
+
+    private GLFWWindowSizeCallback sizeCallback = new GLFWWindowSizeCallback() {
+        @Override
+        public void invoke(long window, int width, int height) {
+            for (ResizeCallback c : resizeCallbacks) {
+                c.onResize(GLFWWindow.this, width, height);
+            }
+        }
+    };
+
     public GLFWWindow(int width, int height, String title, Hint... hints) {
         // Setup window hints
         for (Hint hint : hints) {
             glfwWindowHint(hint.hint, hint.value);
         }
 
-        // Create the glfw window
+        // Create the backend window
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create GLFW window");
@@ -58,38 +83,22 @@ public final class GLFWWindow {
         capabilities = GL.createCapabilities();
 
         glfwSetWindowFocusCallback(window, focusCallback);
-
-        glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
-            @Override
-            public void invoke(long window, int width, int height) {
-                for (ResizeCallback c : resizeCallbacks) {
-                    c.onResize(GLFWWindow.this, width, height);
-                }
-            }
-        });
-        glfwSetKeyCallback(window, new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                for (KeyCallback c : keyCallbacks) {
-                    c.onKey(GLFWWindow.this, key, scancode, action, mods);
-                }
-            }
-        });
-        glfwSetWindowCloseCallback(window, new GLFWWindowCloseCallback() {
-            @Override
-            public void invoke(long l) {
-                close();
-                System.exit(0);
-            }
-        });
+        glfwSetWindowSizeCallback(window, sizeCallback);
+        glfwSetKeyCallback(window, keyCallback);
+        glfwSetWindowCloseCallback(window, closeCallback);
     }
 
     public static class Hint {
         private final int hint, value;
+
         public Hint(int hint, int value) {
             this.hint = hint;
             this.value = value;
         }
+    }
+
+    public void enableVSync(boolean enable) {
+        glfwSwapInterval(enable ? 1 : 0);
     }
 
     public void swapBuffers() {
@@ -99,14 +108,17 @@ public final class GLFWWindow {
     public void setVisible(boolean visible) {
         if (visible) {
             glfwShowWindow(window);
-        }
-        else {
+        } else {
             glfwHideWindow(window);
         }
     }
 
-    public void setVSync(boolean vSync) {
-        glfwSwapInterval(vSync ? 1 : 0);
+    public boolean shouldClose() {
+        return glfwWindowShouldClose(window);
+    }
+
+    public void dispose() {
+        glfwDestroyWindow(window);
     }
 
     public void setSize(int width, int height) {

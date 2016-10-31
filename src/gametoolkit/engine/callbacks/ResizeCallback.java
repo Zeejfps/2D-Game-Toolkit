@@ -1,6 +1,6 @@
 package gametoolkit.engine.callbacks;
 
-import gametoolkit.engine.glfw.GLFWWindow;
+import gametoolkit.engine.backend.GLFWWindow;
 
 /**
  * Created by Zeejfps on 10/29/2016.

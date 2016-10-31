@@ -1,9 +1,7 @@
 package test;
 
 import gametoolkit.engine.*;
-import gametoolkit.engine.glfw.ApplicationConfig;
-import gametoolkit.engine.glfw.ApplicationListener;
-import gametoolkit.engine.glfw.GLFWApplication;
+import gametoolkit.engine.backend.*;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import gametoolkit.utils.AssetLoader;
@@ -14,7 +12,7 @@ import java.util.Random;
 /**
  * Created by Zeejfps on 10/28/2016.
  */
-public class IsoGame implements ApplicationListener {
+public class IsoGame implements GLFWAppListener {
 
     private static Random rand = new Random(System.nanoTime());
 
@@ -36,19 +34,24 @@ public class IsoGame implements ApplicationListener {
             {6,  6,  6,  6,  6,  6,  6,  6,  6},
     };
 
+    private GLFWWindow window;
+    private Renderer renderer;
     private Camera camera;
-    private Input input;
+    private GLFWInputHandler input;
     private Time time;
     long startTime;
 
+    private GLFWApp app;
+
     @Override
-    public void onCreate(GLFWApplication app) {
-        camera = new Camera(
-                6f, 4/3f,       // Size and Aspect
-                16,             // Pixels Per Unit
-                app.window
-        );
-        input = new Input(app.window);
+    public void onCreate(GLFWApp app) {
+        this.app = app;
+        window = new GLFWWindow(640, 480, "Test");
+        window.enableVSync(false);
+        camera = new Camera(6f, 4/3f, 16);
+        camera.setClearColor(0x00ffff);
+        renderer = new Renderer(window, camera);
+        input = new GLFWInputHandler(window);
         time = new Time();
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
@@ -61,10 +64,6 @@ public class IsoGame implements ApplicationListener {
             s.pivot.set(0.5f, 0.7f);
         }
         env = AssetLoader.loadSpriteSheet("BoxterEnviroment.png", 16, 16);
-    }
-
-    @Override
-    public void init() {
         time.start();
         startTime = System.currentTimeMillis();
     }
@@ -79,6 +78,9 @@ public class IsoGame implements ApplicationListener {
                 i = 4;
             }
             t = 0;
+        }
+        if (window.shouldClose()) {
+            app.exit();
         }
     }
 
@@ -112,33 +114,38 @@ public class IsoGame implements ApplicationListener {
     String fpsStr = "FPS: 666";
     @Override
     public void render() {
-        camera.clear(0x00ffff);
+        renderer.begin();
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                camera.renderSprite(env[map[i][j]], new Vec2f(j, camera.getSize() - i));
+                renderer.renderSprite(env[map[i][j]], new Vec2f(j, camera.getSize() - i));
             }
         }
 
-        camera.renderSprite(sprites[i], new Vec2f(0, y));
-        camera.renderString(fpsStr,new Vec2i(0, camera.getFramebufferHeight()),font,0);
+        renderer.renderSprite(sprites[i], new Vec2f(0, y));
+        renderer.renderString(fpsStr, new Vec2i(0, camera.getFramebuffer().height()),font,0);
         fps++;
         if (System.currentTimeMillis() - startTime >= 1000) {
             fpsStr = "FPS: " + fps;
             fps = 0;
             startTime = System.currentTimeMillis();
         }
-        camera.render();
+        renderer.end();
+        window.swapBuffers();
+    }
+
+    @Override
+    public void onDispose() {
+        window.dispose();
     }
 
     public static void main(String[] args) {
-        ApplicationConfig config = new ApplicationConfig();
+        GLFWAppConfig config = new GLFWAppConfig();
         config.setFixedUpdateInterval(60);
         config.setApplicationSize(640, 480);
         config.setApplicationTitle("Test Game");
         config.setResizable(true);
-        config.enableVSync(false);
-        GLFWApplication app = new GLFWApplication(new IsoGame(), config);
-        app.launch();
+        config.enableVSync(true);
+        GLFWApp app = new GLFWApp(new IsoGame(), config);
     }
 
 }

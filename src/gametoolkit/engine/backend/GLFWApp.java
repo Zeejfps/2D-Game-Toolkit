@@ -1,5 +1,6 @@
-package gametoolkit.engine.glfw;
+package gametoolkit.engine.backend;
 
+import gametoolkit.engine.Renderer;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -7,44 +8,36 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * Created by root on 10/31/16.
  */
-public class GLFWApplication {
-
-    private static boolean GLFW_INITIALIZED;
+public class GLFWApp {
 
     private boolean running;
-    private final ApplicationListener appListener;
+    private final GLFWAppListener appListener;
 
     private double nsPerUpdate;
-    public final GLFWWindow window;
 
-    public GLFWApplication(ApplicationListener appListener, ApplicationConfig config) {
+    public GLFWApp(GLFWAppListener appListener, GLFWAppConfig config) {
         this.appListener = appListener;
         nsPerUpdate = config.nsPerUpdate;
 
-        // Initialize glfw
-        if (!GLFW_INITIALIZED) {
-            GLFWErrorCallback.createPrint(System.err).set();
-            if (!glfwInit()) {
-                throw new IllegalStateException("Unable to initialize GLFW");
-            }
-            GLFW_INITIALIZED = true;
+        // Initialize backend
+        GLFWErrorCallback.createPrint(System.err).set();
+        if (!glfwInit()) {
+            throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        GLFWWindow.Hint[] hints = {
-                new GLFWWindow.Hint(GLFW_VISIBLE, GLFW_FALSE),
-                new GLFWWindow.Hint(GLFW_RESIZABLE, config.resizable ? GLFW_TRUE : GLFW_FALSE)
-        };
-        window = new GLFWWindow(config.width, config.height, config.title, hints);
-        glfwSwapInterval(config.vSync ? 1 : 0);
         appListener.onCreate(this);
+        try {
+            loop();
+        }
+        finally {
+            appListener.onDispose();
+            glfwTerminate();
+            glfwSetErrorCallback(null).free();
+        }
     }
 
-    public void launch() {
-        if (running) return;
+    private void loop() {
         running = true;
-
-        window.setVisible(true);
-        appListener.init();
         int maxFramesToSkip = 5;
         int skippedFrames = 0;
         double lag = 0, current, elapsed;
@@ -66,7 +59,6 @@ public class GLFWApplication {
 
             appListener.update();
             appListener.render();
-            window.swapBuffers();
         }
     }
 
