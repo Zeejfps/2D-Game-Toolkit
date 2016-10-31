@@ -1,4 +1,4 @@
-package gametoolkit.engine;
+package gametoolkit.engine.glfw;
 
 /**
  * Created by root on 10/31/16.

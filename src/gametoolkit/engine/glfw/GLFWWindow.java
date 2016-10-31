@@ -1,4 +1,4 @@
-package gametoolkit.engine;
+package gametoolkit.engine.glfw;
 
 import gametoolkit.engine.callbacks.KeyCallback;
 import gametoolkit.engine.callbacks.ResizeCallback;
@@ -15,7 +15,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public final class Window {
+public final class GLFWWindow {
 
     private List<ResizeCallback> resizeCallbacks = new ArrayList<>();
     private List<KeyCallback> keyCallbacks = new ArrayList<>();
@@ -33,7 +33,7 @@ public final class Window {
         }
     };
 
-    public Window(int width, int height, String title, Hint... hints) {
+    public GLFWWindow(int width, int height, String title, Hint... hints) {
         // Setup window hints
         for (Hint hint : hints) {
             glfwWindowHint(hint.hint, hint.value);
@@ -63,7 +63,7 @@ public final class Window {
             @Override
             public void invoke(long window, int width, int height) {
                 for (ResizeCallback c : resizeCallbacks) {
-                    c.onResize(Window.this, width, height);
+                    c.onResize(GLFWWindow.this, width, height);
                 }
             }
         });
@@ -71,7 +71,7 @@ public final class Window {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 for (KeyCallback c : keyCallbacks) {
-                    c.onKey(Window.this, key, scancode, action, mods);
+                    c.onKey(GLFWWindow.this, key, scancode, action, mods);
                 }
             }
         });

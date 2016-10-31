@@ -1,5 +1,6 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.glfw.GLFWWindow;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import org.lwjgl.BufferUtils;
@@ -15,7 +16,7 @@ import java.nio.IntBuffer;
 public final class Camera {
 
     public final Vec2f position;
-    public final Window window;
+    public final GLFWWindow window;
 
     private float size;
     private float aspect;
@@ -29,7 +30,7 @@ public final class Camera {
     private int fPosXS, fPosYS;
     private int fPosXE, fPosYE;
 
-    public Camera(float size, float aspect, int pixelsPerUnit, Window window) {
+    public Camera(float size, float aspect, int pixelsPerUnit, GLFWWindow window) {
         this.window = window;
         this.position = new Vec2f();
         setSize(size);
@@ -56,7 +57,7 @@ public final class Camera {
         window.addResizeCallback(this::resize);
     }
 
-    void resize(Window window, int width, int height) {
+    void resize(GLFWWindow window, int width, int height) {
         double xScale= width;
         double yScale= width / aspect;
         if (yScale > height) {

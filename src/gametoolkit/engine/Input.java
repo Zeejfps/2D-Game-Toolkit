@@ -1,5 +1,7 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.glfw.GLFWWindow;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -13,7 +15,7 @@ public class Input {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    public Input(Window window) {
+    public Input(GLFWWindow window) {
         window.addKeyCallback((w, key, scancode, action, mods) -> {
             switch (action) {
                 case GLFW_REPEAT:

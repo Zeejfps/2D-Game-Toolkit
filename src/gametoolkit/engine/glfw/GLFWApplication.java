@@ -1,4 +1,4 @@
-package gametoolkit.engine;
+package gametoolkit.engine.glfw;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -15,7 +15,7 @@ public class GLFWApplication {
     private final ApplicationListener appListener;
 
     private double nsPerUpdate;
-    public final Window window;
+    public final GLFWWindow window;
 
     public GLFWApplication(ApplicationListener appListener, ApplicationConfig config) {
         this.appListener = appListener;
@@ -30,10 +30,11 @@ public class GLFWApplication {
             GLFW_INITIALIZED = true;
         }
 
-        Window.Hint[] hints = {
-                new Window.Hint(GLFW_RESIZABLE, config.resizable ? GLFW_TRUE : GLFW_FALSE)
+        GLFWWindow.Hint[] hints = {
+                new GLFWWindow.Hint(GLFW_VISIBLE, GLFW_FALSE),
+                new GLFWWindow.Hint(GLFW_RESIZABLE, config.resizable ? GLFW_TRUE : GLFW_FALSE)
         };
-        window = new Window(config.width, config.height, config.title, hints);
+        window = new GLFWWindow(config.width, config.height, config.title, hints);
         glfwSwapInterval(config.vSync ? 1 : 0);
         appListener.onCreate(this);
     }

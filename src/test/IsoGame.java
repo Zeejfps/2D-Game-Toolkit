@@ -1,15 +1,15 @@
 package test;
 
 import gametoolkit.engine.*;
+import gametoolkit.engine.glfw.ApplicationConfig;
+import gametoolkit.engine.glfw.ApplicationListener;
+import gametoolkit.engine.glfw.GLFWApplication;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import gametoolkit.utils.AssetLoader;
 
 import java.awt.event.KeyEvent;
 import java.util.Random;
-
-import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 
 /**
  * Created by Zeejfps on 10/28/2016.
@@ -136,6 +136,7 @@ public class IsoGame implements ApplicationListener {
         config.setApplicationSize(640, 480);
         config.setApplicationTitle("Test Game");
         config.setResizable(true);
+        config.enableVSync(false);
         GLFWApplication app = new GLFWApplication(new IsoGame(), config);
         app.launch();
     }
