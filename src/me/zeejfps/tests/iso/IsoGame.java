@@ -1,15 +1,15 @@
 package me.zeejfps.tests.iso;
 
-import me.zeejfps.gametoolkit.engine.Bitmap;
-import me.zeejfps.gametoolkit.engine.BitmapFont;
-import me.zeejfps.gametoolkit.engine.Game;
-import me.zeejfps.gametoolkit.engine.Sprite;
+import me.zeejfps.gametoolkit.engine.*;
 import me.zeejfps.gametoolkit.math.Vec2f;
 import me.zeejfps.gametoolkit.math.Vec2i;
 import me.zeejfps.gametoolkit.utils.AssetLoader;
 
 import java.awt.event.KeyEvent;
 import java.util.Random;
+
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 
 /**
  * Created by Zeejfps on 10/28/2016.
@@ -24,19 +24,36 @@ public class IsoGame extends Game {
     Bitmap bitmap;
     BitmapFont font;
 
+    Sprite[] env;
+
+    int[][] map = {
+            {6,  6,  6,  6,  6,  6,  6,  6,  6},
+            {6, 13, 13, 13, 13, 13, 13, 13,  6},
+            {6, 13, 13, 13, 13, 13, 13, 13,  6},
+            {6, 13, 13, 13, 13, 13, 13, 13,  6},
+            {6, 13, 13, 13, 13, 13, 13, 13,  6},
+            {6,  0,  0,  0,  0,  0,  0,  0,  6},
+            {6,  6,  6,  6,  6,  6,  6,  6,  6},
+    };
+
+    private Window window;
+    private Camera camera;
+    private InputHandler input;
+
     public IsoGame() {
-        setPixeslPerUnit(32);
-
-        window.setSize(640, 480);
-        window.setTitle("Test Game");
-        window.setResizable(false);
-
-        camera.setClearColor(0x00ffff);
-        camera.setAspect(4/3f);
-        camera.setSize(4);
+        window = new Window(
+                640, 480,       // Window size
+                "Hello",        // Window title
+                new Window.Hint(GLFW_VISIBLE, GLFW_FALSE)
+        );
+        camera = new Camera(
+                4f, 4/3f,       // Size and Aspect
+                16,             // Pixels Per Unit
+                window
+        );
+        input = new InputHandler(window);
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
-
         bitmap = AssetLoader.loadBitmap("iso.png");
         s = AssetLoader.loadSprite("iso.png");
         snake = AssetLoader.loadSprite("Snake/head.png");
@@ -45,18 +62,19 @@ public class IsoGame extends Game {
         for (Sprite s : sprites) {
             s.pivot.set(0.5f, 0.7f);
         }
-
+        env = AssetLoader.loadSpriteSheet("BoxterEnviroment.png", 16, 16);
     }
 
     long startTime;
     @Override
     protected void onInit() {
-        startTime = System.currentTimeMillis();
         window.show();
+        startTime = System.currentTimeMillis();
     }
 
     @Override
     protected void onUpdate() {
+        input.pollEvents();
         t += time.deltaTime();
         if (t >= 125) {
             i += 5;
@@ -65,32 +83,31 @@ public class IsoGame extends Game {
             }
             t = 0;
         }
-        y -= time.deltaTime() * 0.001f;
+
     }
 
     double t;
     boolean ss;
     @Override
     protected void onFixedUpdate() {
+        y -= time.deltaTime() * 0.001f;
         if (input.getKeyDown(KeyEvent.VK_A)) {
-            camera.position.x -= 1f;
+            camera.position.x -= time.deltaTime() * 0.1f;
         }
         else if (input.getKeyDown(KeyEvent.VK_D)) {
-            camera.position.x += 1f;
+            camera.position.x += time.deltaTime() * 0.1f;
         }
 
         if (input.getKeyDown(KeyEvent.VK_W)) {
-            camera.position.y += 1f;
+            camera.position.y += time.deltaTime() * 0.1f;
         }
         else if (input.getKeyDown(KeyEvent.VK_S)) {
-            camera.position.y -= 1f;
+            camera.position.y -= time.deltaTime()  * 0.1f;
         }
 
         if (input.getKeyPressed(KeyEvent.VK_SPACE)) {
-            camera.setSize(camera.getSize()+1f);
+            camera.setSize(camera.getSize()+0.1f);
         }
-
-
     }
 
     int fps=0;
@@ -99,47 +116,24 @@ public class IsoGame extends Game {
     String fpsStr = "FPS: 666";
     @Override
     protected void onRender() {
+        camera.clear(0x00ffff);
 
-
-
-
-        /*camera.renderBitmap(sprites[2], new Vec2f(0, 0));
-
-        Vec2i p = camera.worldToScreenPos(new Vec2f(0, 0));
-        camera.setPixel(p.x, p.y, 0xff00ff);
-        */
-
-        //camera.renderBitmap(bitmap, new Vec2i(80, 80));
-        camera.renderSprite(s, new Vec2f(0, 0));
-        camera.renderSprite(s, new Vec2f(0.5f, 0.25f));
-        camera.renderSprite(s, new Vec2f(0.5f, -0.25f));
-        camera.renderSprite(s, new Vec2f(-0.5f, 0.25f));
-        camera.renderSprite(s, new Vec2f(-0.5f, -0.25f));
-        camera.renderSprite(s, new Vec2f(-0.5f, -0.75f));
-        camera.renderSprite(s, new Vec2f(-1f, 0));
-        camera.renderSprite(sprites[3], new Vec2f(0, 0));
-        camera.renderSprite(sprites[9], new Vec2f(1, 0));
-        camera.renderSprite(sprites[i], new Vec2f(-1, y));
-        /*for (int i = -10; i < 10; i++) {
-            for (int j = -10; j < 10; j++) {
-                Vec2i p = camera.worldToScreenPos(new Vec2f(j, i));
-                camera.renderBitmap(s, new Vec2f(j, i));
-                //camera.setPixel(p.x, p.y, 0xff00ffff);
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                camera.renderSprite(env[map[i][j]], new Vec2f(j, camera.getSize() - i));
             }
-        }*/
-        camera.renderString(
-                fpsStr,
-                new Vec2i(0, camera.getFramebufferHeight()),
-                font,
-                0
-        );
+        }
 
+        camera.renderString(fpsStr,new Vec2i(0, camera.getFramebufferHeight()),font,0);
         fps++;
         if (System.currentTimeMillis() - startTime >= 1000) {
             fpsStr = "FPS: " + fps;
             fps = 0;
             startTime = System.currentTimeMillis();
         }
+
+        camera.render();
+        window.swapBuffers();
     }
 
     public static void main(String[] args) {

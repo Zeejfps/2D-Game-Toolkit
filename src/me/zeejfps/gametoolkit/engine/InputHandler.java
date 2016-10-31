@@ -1,13 +1,11 @@
 package me.zeejfps.gametoolkit.engine;
 
-import java.util.Arrays;
-
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Created by Zeejfps on 6/15/2016.
  */
-public class Input {
+public class InputHandler {
 
     private static final int MAX_KEYS = 600;
 
@@ -15,14 +13,8 @@ public class Input {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    private final Game game;
-
-    Input(Game game) {
-        this.game = game;
-    }
-
-    void init() {
-        game.window.addKeyCallback((window, key, scancode, action, mods) -> {
+    public InputHandler(Window window) {
+        window.addKeyCallback((w, key, scancode, action, mods) -> {
             switch (action) {
                 case GLFW_REPEAT:
                 case GLFW_PRESS:
@@ -39,7 +31,7 @@ public class Input {
         });
     }
 
-    void pollEvents() {
+    public void pollEvents() {
         glfwPollEvents();
     }
 

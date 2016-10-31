@@ -4,6 +4,7 @@ import me.zeejfps.gametoolkit.engine.callbacks.KeyCallback;
 import me.zeejfps.gametoolkit.engine.callbacks.ResizeCallback;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,44 +15,50 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public class Window {
+public final class Window {
+
+    private static boolean GLFW_INITIALIZED;
 
     private List<ResizeCallback> resizeCallbacks = new ArrayList<>();
     private List<KeyCallback> keyCallbacks = new ArrayList<>();
 
-    private long window;
-    private boolean initialized;
+    private final long window;
+    private GLCapabilities capabilities = null;
 
-    private int width, height;
-    private String title;
-    private boolean resizable;
-
-    public Window() {
-        width = 640;
-        height = 480;
-        title = "Untitled";
-        resizable = true;
-    }
-
-    void init() {
-        GLFWErrorCallback.createPrint(System.err).set();
-
-        if (!glfwInit()) {
-            throw new IllegalStateException("Unable to initialize GLFW");
+    public Window(int width, int height, String title, Hint... hints) {
+        // Initialize glfw
+        if (!GLFW_INITIALIZED) {
+            GLFWErrorCallback.createPrint(System.err).set();
+            if (!glfwInit()) {
+                throw new IllegalStateException("Unable to initialize GLFW");
+            }
+            GLFW_INITIALIZED = true;
         }
 
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        // Setup window hints
+        for (Hint hint : hints) {
+            glfwWindowHint(hint.hint, hint.value);
+        }
+
+        // Create the glfw window
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create GLFW window");
         }
 
+        // Center the window
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(
                 window,
                 (vidmode.width() - width) / 2,
                 (vidmode.height() - height) / 2
         );
+
+        // Create the capabilities
+        glfwMakeContextCurrent(window);
+        glfwSwapInterval(0);
+        capabilities = GL.createCapabilities();
+
         glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
@@ -75,19 +82,24 @@ public class Window {
                 System.exit(0);
             }
         });
-
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(0);
-        GL.createCapabilities();
-        initialized = true;
     }
 
-    void swapBuffers() {
-        glfwSwapBuffers(window);
+    public static class Hint {
+        private final int hint, value;
+        public Hint(int hint, int value) {
+            this.hint = hint;
+            this.value = value;
+        }
     }
 
     public void show() {
+        glfwMakeContextCurrent(window);
+        GL.setCapabilities(capabilities);
         glfwShowWindow(window);
+    }
+
+    public void swapBuffers() {
+        glfwSwapBuffers(window);
     }
 
     public void close() {
@@ -95,23 +107,15 @@ public class Window {
         glfwDestroyWindow(window);
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+        GLFW_INITIALIZED = false;
     }
 
     public void setSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-        if (initialized)
-            glfwSetWindowSize(width, width, height);
+        glfwSetWindowSize(width, width, height);
     }
 
     public void setTitle(String title) {
-        this.title = title;
-        if (initialized)
-            glfwSetWindowTitle(window, title);
-    }
-
-    public void setResizable(boolean resizable) {
-        this.resizable = resizable;
+        glfwSetWindowTitle(window, title);
     }
 
     public void addResizeCallback(ResizeCallback callback) {

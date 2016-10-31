@@ -9,19 +9,17 @@ import org.lwjgl.opengl.GL30;
 
 import java.nio.IntBuffer;
 
-import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
-
 /**
  * Created by Zeejfps on 10/28/2016.
  */
-public class Camera {
+public final class Camera {
 
     public final Vec2f position;
-    private final Game game;
+    public final Window window;
 
     private float size;
     private float aspect;
-    private int clearColor;
+    private int pixelsPerUnit;
 
     private int framebuffer;
     private int texture;
@@ -31,16 +29,14 @@ public class Camera {
     private int fPosXS, fPosYS;
     private int fPosXE, fPosYE;
 
-    Camera(Game game) {
-        this.game = game;
-        position = new Vec2f();
-        setSize(3);
-        setAspect(4/3f);
-        setClearColor(0);
-    }
+    public Camera(float size, float aspect, int pixelsPerUnit, Window window) {
+        this.window = window;
+        this.position = new Vec2f();
+        setSize(size);
+        setAspect(aspect);
+        setPixelsPerUnit(pixelsPerUnit);
 
-    void init() {
-        fHeight = Math.round(2 * size * game.getPixelsPerUnit());
+        fHeight = Math.round(2 * size * pixelsPerUnit);
         fWidth = Math.round(fHeight * aspect);
         pixels = BufferUtils.createIntBuffer(fWidth*fHeight);
 
@@ -57,17 +53,30 @@ public class Camera {
         GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, texture, 0);
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
 
-        game.window.addResizeCallback(this::resize);
+        window.addResizeCallback(this::resize);
     }
 
-    void clear() {
+    void resize(Window window, int width, int height) {
+        double xScale= width;
+        double yScale= width / aspect;
+        if (yScale > height) {
+            xScale = height * aspect;
+            yScale = height;
+        }
+        fPosXS = (int)((width - xScale)  * 0.5f);
+        fPosYS = (int)((height - yScale) * 0.5f);
+        fPosXE = (int)Math.round(xScale) + fPosXS;
+        fPosYE = (int)Math.round(yScale) + fPosYS;
+    }
+
+    public void clear(int color) {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         for (int i = 0; i < pixels.limit(); i++) {
-            pixels.put(i, clearColor);
+            pixels.put(i, color);
         }
     }
 
-    void render() {
+    public void render() {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
         GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, fWidth, fHeight, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, pixels);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
@@ -82,19 +91,6 @@ public class Camera {
                 GL11.GL_COLOR_BUFFER_BIT,
                 GL11.GL_NEAREST
         );
-    }
-
-    private void resize(Window window, int width, int height) {
-        double xScale= width;
-        double yScale= width / aspect;
-        if (yScale > height) {
-            xScale = height * aspect;
-            yScale = height;
-        }
-        fPosXS = (int)((width - xScale)  * 0.5f);
-        fPosYS = (int)((height - yScale) * 0.5f);
-        fPosXE = (int)Math.round(xScale) + fPosXS;
-        fPosYE = (int)Math.round(yScale) + fPosYS;
     }
 
     public void renderSprite(Sprite sprite, Vec2f worldPos) {
@@ -173,9 +169,17 @@ public class Camera {
     }
 
     public Vec2i worldToScreenPos(Vec2f pos) {
-        int x = (int)(fWidth * 0.5f + pos.x*game.getPixelsPerUnit() - position.x);
-        int y = (int)(fHeight * 0.5f + pos.y*game.getPixelsPerUnit() - position.y);
+        int x = (int)(fWidth * 0.5f + pos.x*pixelsPerUnit - position.x);
+        int y = (int)(fHeight * 0.5f + pos.y*pixelsPerUnit - position.y);
         return new Vec2i(x, y);
+    }
+
+    public void setPixelsPerUnit(int pixelsPerUnit) {
+        this.pixelsPerUnit = pixelsPerUnit > 0 ? pixelsPerUnit : 1;
+    }
+
+    public int getPixelsPerUnit() {
+        return pixelsPerUnit;
     }
 
     public int getFramebufferWidth() {
@@ -201,13 +205,4 @@ public class Camera {
     public float getAspect() {
         return aspect;
     }
-
-    public void setClearColor(int color) {
-        this.clearColor = color;
-    }
-
-    public int getClearColor() {
-        return clearColor;
-    }
-
 }
