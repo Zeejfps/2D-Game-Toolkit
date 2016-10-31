@@ -15,9 +15,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public final class Display {
-
-    private static boolean GLFW_INITIALIZED;
+public final class Window {
 
     private List<ResizeCallback> resizeCallbacks = new ArrayList<>();
     private List<KeyCallback> keyCallbacks = new ArrayList<>();
@@ -25,28 +23,19 @@ public final class Display {
     private final long window;
     private GLCapabilities capabilities = null;
 
-    public Display(int width, int height, String title, Hint... hints) {
-        // Initialize glfw
-        if (!GLFW_INITIALIZED) {
-            GLFWErrorCallback.createPrint(System.err).set();
-            if (!glfwInit()) {
-                throw new IllegalStateException("Unable to initialize GLFW");
-            }
-            GLFW_INITIALIZED = true;
-        }
-
-        // Setup display hints
+    public Window(int width, int height, String title, Hint... hints) {
+        // Setup window hints
         for (Hint hint : hints) {
             glfwWindowHint(hint.hint, hint.value);
         }
 
-        // Create the glfw display
+        // Create the glfw window
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL) {
-            throw new RuntimeException("Failed to create GLFW display");
+            throw new RuntimeException("Failed to create GLFW window");
         }
 
-        // Center the display
+        // Center the window
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(
                 window,
@@ -62,7 +51,7 @@ public final class Display {
             @Override
             public void invoke(long window, int width, int height) {
                 for (ResizeCallback c : resizeCallbacks) {
-                    c.onResize(Display.this, width, height);
+                    c.onResize(Window.this, width, height);
                 }
             }
         });
@@ -70,7 +59,7 @@ public final class Display {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 for (KeyCallback c : keyCallbacks) {
-                    c.onKey(Display.this, key, scancode, action, mods);
+                    c.onKey(Window.this, key, scancode, action, mods);
                 }
             }
         });
@@ -83,10 +72,6 @@ public final class Display {
         });
     }
 
-    void swapBuffers() {
-        glfwSwapBuffers(window);
-    }
-
     public static class Hint {
         private final int hint, value;
         public Hint(int hint, int value) {
@@ -95,22 +80,21 @@ public final class Display {
         }
     }
 
-    public void show() {
-        glfwMakeContextCurrent(window);
-        GL.setCapabilities(capabilities);
-        glfwShowWindow(window);
+    public void swapBuffers() {
+        glfwSwapBuffers(window);
+    }
+
+    public void setVisible(boolean visible) {
+        if (visible) {
+            glfwShowWindow(window);
+        }
+        else {
+            glfwHideWindow(window);
+        }
     }
 
     public void setVSync(boolean vSync) {
         glfwSwapInterval(vSync ? 1 : 0);
-    }
-
-    public void close() {
-        glfwHideWindow(window);
-        glfwDestroyWindow(window);
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
-        GLFW_INITIALIZED = false;
     }
 
     public void setSize(int width, int height) {

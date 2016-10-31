@@ -14,7 +14,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 /**
  * Created by Zeejfps on 10/28/2016.
  */
-public class IsoGame extends Game {
+public class IsoGame implements ApplicationListener {
 
     private static Random rand = new Random(System.nanoTime());
 
@@ -36,20 +36,28 @@ public class IsoGame extends Game {
             {6,  6,  6,  6,  6,  6,  6,  6,  6},
     };
 
-    public IsoGame() {
-        display = new Display(
-                640, 480,       // Display size
-                "Hello",        // Display title
-                new Display.Hint(GLFW_VISIBLE, GLFW_FALSE)
+    private Window window;
+    private Camera camera;
+    private Input input;
+    private Time time;
+
+    long startTime;
+    @Override
+    public void onCreate() {
+        window = new Window(
+                640, 480,       // Window size
+                "Hello",        // Window title
+                new Window.Hint(GLFW_VISIBLE, GLFW_FALSE)
         );
-        display.setVSync(true);
-        
+        window.setVSync(true);
+
         camera = new Camera(
                 6f, 4/3f,       // Size and Aspect
                 16,             // Pixels Per Unit
-                display
+                window
         );
-        input = new Input(display);
+        input = new Input(window);
+        time = new Time();
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
         bitmap = AssetLoader.loadBitmap("iso.png");
@@ -63,15 +71,17 @@ public class IsoGame extends Game {
         env = AssetLoader.loadSpriteSheet("BoxterEnviroment.png", 16, 16);
     }
 
-    long startTime;
     @Override
-    protected void onInit() {
-        display.show();
+    public void init() {
+        window.setVisible(true);
+        time.start();
         startTime = System.currentTimeMillis();
     }
 
     @Override
-    protected void onUpdate() {
+    public void update() {
+        input.pollEvents();
+        time.tick();
         t += time.deltaTime();
         if (t >= 125) {
             i += 5;
@@ -85,7 +95,7 @@ public class IsoGame extends Game {
     double t;
     boolean ss;
     @Override
-    protected void onFixedUpdate() {
+    public void fixedUpdate() {
         y -= 0.05f;
         if (input.getKeyDown(KeyEvent.VK_A)) {
             camera.position.x -= 1f;
@@ -111,7 +121,7 @@ public class IsoGame extends Game {
     float y = 0;
     String fpsStr = "FPS: 666";
     @Override
-    protected void onRender() {
+    public void render() {
         camera.clear(0x00ffff);
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
@@ -127,10 +137,16 @@ public class IsoGame extends Game {
             fps = 0;
             startTime = System.currentTimeMillis();
         }
+        camera.render();
+        window.swapBuffers();
     }
 
     public static void main(String[] args) {
-        new IsoGame().launch();
+        ApplicationConfig config = new ApplicationConfig();
+        config.setFixedUpdateInterval(60);
+        config.enableVSync(false);
+        GLFWApplication app = new GLFWApplication(new IsoGame(), config);
+        app.launch();
     }
 
 }

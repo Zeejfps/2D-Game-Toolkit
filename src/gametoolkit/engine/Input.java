@@ -13,8 +13,8 @@ public class Input {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    public Input(Display display) {
-        display.addKeyCallback((w, key, scancode, action, mods) -> {
+    public Input(Window window) {
+        window.addKeyCallback((w, key, scancode, action, mods) -> {
             switch (action) {
                 case GLFW_REPEAT:
                 case GLFW_PRESS:
@@ -31,7 +31,7 @@ public class Input {
         });
     }
 
-    void pollEvents() {
+    public void pollEvents() {
         glfwPollEvents();
     }
 

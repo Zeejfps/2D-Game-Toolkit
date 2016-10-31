@@ -11,13 +11,13 @@ public class Time {
     private double startTime;
     private double deltaTime;
 
-    Time() {}
+    public Time() {}
 
-    protected void init() {
+    public void start() {
         startTime = System.nanoTime();
     }
 
-    protected void tick() {
+    public void tick() {
         deltaTime = (System.nanoTime() - startTime) / NS_IN_MS;
         startTime = System.nanoTime();
     }

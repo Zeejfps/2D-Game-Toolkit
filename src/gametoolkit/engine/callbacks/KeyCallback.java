@@ -1,10 +1,10 @@
 package gametoolkit.engine.callbacks;
 
-import gametoolkit.engine.Display;
+import gametoolkit.engine.Window;
 
 /**
  * Created by Zeejfps on 10/29/2016.
  */
 public interface KeyCallback {
-    void onKey(Display display, int key, int scancode, int action, int mods);
+    void onKey(Window window, int key, int scancode, int action, int mods);
 }
