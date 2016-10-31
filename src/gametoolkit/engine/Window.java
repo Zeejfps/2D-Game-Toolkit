@@ -15,7 +15,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public class Window {
+public class Window implements Disposable {
 
     // Callback lists
     private final List<SizeCallback> sizeCallbacks = new ArrayList<>();
@@ -128,6 +128,7 @@ public class Window {
         return glfwWindowShouldClose(window);
     }
 
+    @Override
     public void dispose() {
         glfwDestroyWindow(window);
     }

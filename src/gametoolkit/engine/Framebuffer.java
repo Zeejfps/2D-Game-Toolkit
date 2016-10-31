@@ -1,16 +1,16 @@
 package gametoolkit.engine;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 
 /**
  * Created by root on 10/31/16.
  */
-public class Framebuffer {
+public class Framebuffer implements Disposable {
 
     private int width, height;
     private IntBuffer pixels;
@@ -21,7 +21,7 @@ public class Framebuffer {
     Framebuffer(int width, int height) {
         this.width = width;
         this.height = height;
-        pixels = BufferUtils.createIntBuffer(width*height);
+        pixels = MemoryUtil.memAllocInt(width*height);;
         framebufferHandle = GL30.glGenFramebuffers();
         resize(width, height);
     }
@@ -72,4 +72,12 @@ public class Framebuffer {
         return height;
     }
 
+    @Override
+    public void dispose() {
+        GL11.glDeleteTextures(textureHandle);
+        GL30.glDeleteFramebuffers(framebufferHandle);
+        MemoryUtil.memFree(pixels);
+        width = 0;
+        height = 0;
+    }
 }

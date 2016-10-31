@@ -6,7 +6,7 @@ import gametoolkit.math.Vec2i;
 /**
  * Created by Zeejfps on 10/28/2016.
  */
-public final class Camera {
+public final class Camera implements Disposable {
 
     public final Vec2f position;
 
@@ -67,5 +67,10 @@ public final class Camera {
 
     public float getAspect() {
         return aspect;
+    }
+
+    @Override
+    public void dispose() {
+        framebuffer.dispose();
     }
 }
