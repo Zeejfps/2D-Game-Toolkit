@@ -1,7 +1,7 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
-import me.zeejfps.gametoolkit.math.Vec2f;
-import me.zeejfps.gametoolkit.math.Vec2i;
+import gametoolkit.math.Vec2f;
+import gametoolkit.math.Vec2i;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -122,7 +122,7 @@ public final class Camera {
         renderBitmap(bitmap, screenPos.x, screenPos.y);
     }
 
-    public void renderString(String str, Vec2i screenPos, BitmapFont font, int color) {
+    public void renderString(String str, Vec2i screenPos, Font font, int color) {
         int xCursor = screenPos.x;
         int yCursor = screenPos.y;
         char[] chars = str.toCharArray();
@@ -138,7 +138,7 @@ public final class Camera {
                 xCursor = screenPos.x;
             }
             else {
-                BitmapFont.Glyph glyph = font.getChar((int)c);
+                Font.Glyph glyph = font.getChar((int)c);
                 if (glyph == null) return;
 
                 int xRender = xCursor + glyph.xOffset + kerning;
@@ -150,7 +150,7 @@ public final class Camera {
         }
     }
 
-    public void renderGlyph(BitmapFont.Glyph glyph, int xPos, int yPos, int color){
+    public void renderGlyph(Font.Glyph glyph, int xPos, int yPos, int color){
         int xs = xPos < 0 ? 0 : xPos;
         int ys = yPos > fHeight ? fHeight : yPos;
         int xe = xPos + glyph.bitmap.width();

@@ -1,4 +1,4 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

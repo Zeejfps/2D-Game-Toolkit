@@ -1,11 +1,11 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Created by Zeejfps on 6/15/2016.
  */
-public class InputHandler {
+public class Input {
 
     private static final int MAX_KEYS = 600;
 
@@ -13,7 +13,7 @@ public class InputHandler {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    public InputHandler(Display display) {
+    public Input(Display display) {
         display.addKeyCallback((w, key, scancode, action, mods) -> {
             switch (action) {
                 case GLFW_REPEAT:
@@ -31,7 +31,7 @@ public class InputHandler {
         });
     }
 
-    public void pollEvents() {
+    void pollEvents() {
         glfwPollEvents();
     }
 

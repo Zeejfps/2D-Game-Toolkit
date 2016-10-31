@@ -1,6 +1,6 @@
-package me.zeejfps.gametoolkit.engine.callbacks;
+package gametoolkit.engine.callbacks;
 
-import me.zeejfps.gametoolkit.engine.Display;
+import gametoolkit.engine.Display;
 
 /**
  * Created by Zeejfps on 10/29/2016.

@@ -1,9 +1,9 @@
-package me.zeejfps.tests.iso;
+package test;
 
-import me.zeejfps.gametoolkit.engine.*;
-import me.zeejfps.gametoolkit.math.Vec2f;
-import me.zeejfps.gametoolkit.math.Vec2i;
-import me.zeejfps.gametoolkit.utils.AssetLoader;
+import gametoolkit.engine.*;
+import gametoolkit.math.Vec2f;
+import gametoolkit.math.Vec2i;
+import gametoolkit.utils.AssetLoader;
 
 import java.awt.event.KeyEvent;
 import java.util.Random;
@@ -22,7 +22,7 @@ public class IsoGame extends Game {
     Sprite snake;
     Sprite[] sprites;
     Bitmap bitmap;
-    BitmapFont font;
+    Font font;
 
     Sprite[] env;
 
@@ -36,10 +36,6 @@ public class IsoGame extends Game {
             {6,  6,  6,  6,  6,  6,  6,  6,  6},
     };
 
-    private Display display;
-    private Camera camera;
-    private InputHandler input;
-
     public IsoGame() {
         display = new Display(
                 640, 480,       // Display size
@@ -47,17 +43,17 @@ public class IsoGame extends Game {
                 new Display.Hint(GLFW_VISIBLE, GLFW_FALSE)
         );
         camera = new Camera(
-                4f, 4/3f,       // Size and Aspect
+                6f, 4/3f,       // Size and Aspect
                 16,             // Pixels Per Unit
                 display
         );
-        input = new InputHandler(display);
+        input = new Input(display);
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
         bitmap = AssetLoader.loadBitmap("iso.png");
         s = AssetLoader.loadSprite("iso.png");
-        snake = AssetLoader.loadSprite("Snake/head.png");
         s.pivot.set(0.5f, 0.5f);
+        snake = AssetLoader.loadSprite("Snake/head.png");
         sprites = AssetLoader.loadSpriteSheet("swordsman.png", 72, 72);
         for (Sprite s : sprites) {
             s.pivot.set(0.5f, 0.7f);
@@ -74,7 +70,6 @@ public class IsoGame extends Game {
 
     @Override
     protected void onUpdate() {
-        input.pollEvents();
         t += time.deltaTime();
         if (t >= 125) {
             i += 5;
@@ -116,7 +111,6 @@ public class IsoGame extends Game {
     @Override
     protected void onRender() {
         camera.clear(0x00ffff);
-
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 camera.renderSprite(env[map[i][j]], new Vec2f(j, camera.getSize() - i));
@@ -124,7 +118,6 @@ public class IsoGame extends Game {
         }
 
         camera.renderSprite(sprites[i], new Vec2f(0, y));
-
         camera.renderString(fpsStr,new Vec2i(0, camera.getFramebufferHeight()),font,0);
         fps++;
         if (System.currentTimeMillis() - startTime >= 1000) {
@@ -132,8 +125,6 @@ public class IsoGame extends Game {
             fps = 0;
             startTime = System.currentTimeMillis();
         }
-
-        display.swapBuffers(camera);
     }
 
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
 /**
  * Created by Zeejfps on 8/10/2016.

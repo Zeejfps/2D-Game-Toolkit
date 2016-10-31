@@ -1,6 +1,6 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
-import me.zeejfps.gametoolkit.math.Vec2f;
+import gametoolkit.math.Vec2f;
 
 /**
  * Created by Zeejfps on 10/28/2016.

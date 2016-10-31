@@ -1,8 +1,8 @@
-package me.zeejfps.gametoolkit.utils;
+package gametoolkit.utils;
 
-import me.zeejfps.gametoolkit.engine.Bitmap;
-import me.zeejfps.gametoolkit.engine.BitmapFont;
-import me.zeejfps.gametoolkit.engine.Sprite;
+import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.Font;
+import gametoolkit.engine.Sprite;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,11 +14,11 @@ import java.util.HashMap;
  */
 public class AssetLoader {
 
-    public static BitmapFont loadBitmapFont(String path) {
+    public static Font loadBitmapFont(String path) {
         try {
-            return BitmapFont.load(path);
+            return Font.load(path);
         } catch (IOException e) {
-            return new BitmapFont(new HashMap<>(), new HashMap<>(), 0);
+            return new Font(new HashMap<>(), new HashMap<>(), 0);
         }
     }
 

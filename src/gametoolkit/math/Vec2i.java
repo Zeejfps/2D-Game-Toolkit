@@ -1,4 +1,4 @@
-package me.zeejfps.gametoolkit.math;
+package gametoolkit.math;
 
 /**
  * Created by Zeejfps on 6/16/2016.

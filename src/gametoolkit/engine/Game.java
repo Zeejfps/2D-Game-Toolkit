@@ -1,9 +1,13 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
 /**
  * Created by Zeejfps on 6/16/2016.
  */
 public abstract class Game {
+
+    protected Display display = null;
+    protected Camera camera = null;
+    protected Input input = null;
 
     public final Time time;
 
@@ -12,11 +16,21 @@ public abstract class Game {
 
     public Game() {
         time = new Time();
-
         setFixedUpdateInterval(60);
     }
 
     public void launch() {
+
+        if (display == null) {
+            throw new IllegalStateException("display was never assigned");
+        }
+        if (camera == null) {
+            throw new IllegalStateException("camera was never assigned");
+        }
+        if (input == null) {
+            throw new IllegalStateException("input was never assigned");
+        }
+
         if (running) return;
         running = true;
 
@@ -28,6 +42,8 @@ public abstract class Game {
 
         time.init();
         while(running) {
+            input.pollEvents();
+
             current = System.nanoTime();
             elapsed = current - previous;
             time.tick();
@@ -65,6 +81,8 @@ public abstract class Game {
 
     private void render() {
         onRender();
+        camera.render();
+        display.swapBuffers();
     }
 
     protected abstract void onInit();

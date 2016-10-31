@@ -1,11 +1,10 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,13 +12,13 @@ import java.util.regex.Pattern;
 /**
  * Created by Zeejfps on 10/30/2016.
  */
-public class BitmapFont {
+public class Font {
 
     private final Map<KeyPair, Integer> kernings;
     private final Map<Integer, Glyph> fontChars;
     private final int lineHeight;
 
-    public BitmapFont(Map<Integer, Glyph> fontChars, Map<KeyPair, Integer> kernings, int lineHeight) {
+    public Font(Map<Integer, Glyph> fontChars, Map<KeyPair, Integer> kernings, int lineHeight) {
         this.kernings = kernings;
         this.fontChars = fontChars;
         this.lineHeight = lineHeight;
@@ -79,11 +78,11 @@ public class BitmapFont {
         }
     }
 
-    public static BitmapFont load(String path) throws IOException {
+    public static Font load(String path) throws IOException {
         Map<Integer, Glyph> fontChars = new HashMap<>();
 
         Scanner scanner = new Scanner(
-                BitmapFont.class.getClassLoader().getResourceAsStream(path)
+                Font.class.getClassLoader().getResourceAsStream(path)
         );
         Pattern pattern = Pattern.compile("(\\w+)=\"?([^\\s\"]+)");
         Matcher matcher;
@@ -111,7 +110,7 @@ public class BitmapFont {
 
             String fileName = pageMap.get("file");
             BufferedImage pageImg = ImageIO.read(
-                    BitmapFont.class.getClassLoader().getResourceAsStream("fonts/" + fileName)
+                    Font.class.getClassLoader().getResourceAsStream("fonts/" + fileName)
             );
 
             Map<String, String> charsMap = new HashMap<>();
@@ -173,7 +172,7 @@ public class BitmapFont {
         }
 
         int lineHeight = Integer.parseInt(commonMap.get("lineHeight"));
-        return new BitmapFont(fontChars, kernings, lineHeight);
+        return new Font(fontChars, kernings, lineHeight);
     }
 
     private static void addToMap(Matcher m, Map<String, String> map) {

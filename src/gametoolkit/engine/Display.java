@@ -1,7 +1,7 @@
-package me.zeejfps.gametoolkit.engine;
+package gametoolkit.engine;
 
-import me.zeejfps.gametoolkit.engine.callbacks.KeyCallback;
-import me.zeejfps.gametoolkit.engine.callbacks.ResizeCallback;
+import gametoolkit.engine.callbacks.KeyCallback;
+import gametoolkit.engine.callbacks.ResizeCallback;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
@@ -84,6 +84,10 @@ public final class Display {
         });
     }
 
+    void swapBuffers() {
+        glfwSwapBuffers(window);
+    }
+
     public static class Hint {
         private final int hint, value;
         public Hint(int hint, int value) {
@@ -96,11 +100,6 @@ public final class Display {
         glfwMakeContextCurrent(window);
         GL.setCapabilities(capabilities);
         glfwShowWindow(window);
-    }
-
-    public void swapBuffers(Camera camera) {
-        camera.render();
-        glfwSwapBuffers(window);
     }
 
     public void close() {
