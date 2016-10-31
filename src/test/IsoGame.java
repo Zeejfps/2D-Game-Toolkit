@@ -42,6 +42,8 @@ public class IsoGame extends Game {
                 "Hello",        // Display title
                 new Display.Hint(GLFW_VISIBLE, GLFW_FALSE)
         );
+        display.setVSync(true);
+        
         camera = new Camera(
                 6f, 4/3f,       // Size and Aspect
                 16,             // Pixels Per Unit

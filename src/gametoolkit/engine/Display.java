@@ -56,7 +56,6 @@ public final class Display {
 
         // Create the capabilities
         glfwMakeContextCurrent(window);
-        glfwSwapInterval(0);
         capabilities = GL.createCapabilities();
 
         glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
@@ -100,6 +99,10 @@ public final class Display {
         glfwMakeContextCurrent(window);
         GL.setCapabilities(capabilities);
         glfwShowWindow(window);
+    }
+
+    public void setVSync(boolean vSync) {
+        glfwSwapInterval(vSync ? 1 : 0);
     }
 
     public void close() {
