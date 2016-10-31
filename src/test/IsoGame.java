@@ -36,27 +36,19 @@ public class IsoGame implements ApplicationListener {
             {6,  6,  6,  6,  6,  6,  6,  6,  6},
     };
 
-    private Window window;
     private Camera camera;
     private Input input;
     private Time time;
-
     long startTime;
-    @Override
-    public void onCreate() {
-        window = new Window(
-                640, 480,       // Window size
-                "Hello",        // Window title
-                new Window.Hint(GLFW_VISIBLE, GLFW_FALSE)
-        );
-        window.setVSync(true);
 
+    @Override
+    public void onCreate(GLFWApplication app) {
         camera = new Camera(
                 6f, 4/3f,       // Size and Aspect
                 16,             // Pixels Per Unit
-                window
+                app.window
         );
-        input = new Input(window);
+        input = new Input(app.window);
         time = new Time();
 
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
@@ -73,14 +65,12 @@ public class IsoGame implements ApplicationListener {
 
     @Override
     public void init() {
-        window.setVisible(true);
         time.start();
         startTime = System.currentTimeMillis();
     }
 
     @Override
     public void update() {
-        input.pollEvents();
         time.tick();
         t += time.deltaTime();
         if (t >= 125) {
@@ -138,13 +128,14 @@ public class IsoGame implements ApplicationListener {
             startTime = System.currentTimeMillis();
         }
         camera.render();
-        window.swapBuffers();
     }
 
     public static void main(String[] args) {
         ApplicationConfig config = new ApplicationConfig();
         config.setFixedUpdateInterval(60);
-        config.enableVSync(false);
+        config.setApplicationSize(640, 480);
+        config.setApplicationTitle("Test Game");
+        config.setResizable(true);
         GLFWApplication app = new GLFWApplication(new IsoGame(), config);
         app.launch();
     }

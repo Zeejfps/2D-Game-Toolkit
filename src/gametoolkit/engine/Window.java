@@ -21,7 +21,17 @@ public final class Window {
     private List<KeyCallback> keyCallbacks = new ArrayList<>();
 
     private final long window;
-    private GLCapabilities capabilities = null;
+    private final GLCapabilities capabilities;
+
+    private GLFWWindowFocusCallback focusCallback = new GLFWWindowFocusCallback() {
+        @Override
+        public void invoke(long window, boolean focused) {
+            if (focused) {
+                glfwMakeContextCurrent(window);
+                GL.setCapabilities(capabilities);
+            }
+        }
+    };
 
     public Window(int width, int height, String title, Hint... hints) {
         // Setup window hints
@@ -46,6 +56,8 @@ public final class Window {
         // Create the capabilities
         glfwMakeContextCurrent(window);
         capabilities = GL.createCapabilities();
+
+        glfwSetWindowFocusCallback(window, focusCallback);
 
         glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback() {
             @Override

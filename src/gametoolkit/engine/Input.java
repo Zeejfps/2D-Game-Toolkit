@@ -31,10 +31,6 @@ public class Input {
         });
     }
 
-    public void pollEvents() {
-        glfwPollEvents();
-    }
-
     public boolean getKeyDown(int keycode) {
         return keysDown[keycode];
     }

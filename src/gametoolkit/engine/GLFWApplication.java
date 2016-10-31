@@ -1,11 +1,8 @@
 package gametoolkit.engine;
 
-import gametoolkit.engine.ApplicationConfig;
-import gametoolkit.engine.ApplicationListener;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Created by root on 10/31/16.
@@ -16,11 +13,13 @@ public class GLFWApplication {
 
     private boolean running;
     private final ApplicationListener appListener;
-    private final ApplicationConfig config;
+
+    private double nsPerUpdate;
+    public final Window window;
 
     public GLFWApplication(ApplicationListener appListener, ApplicationConfig config) {
         this.appListener = appListener;
-        this.config = config;
+        nsPerUpdate = config.nsPerUpdate;
 
         // Initialize glfw
         if (!GLFW_INITIALIZED) {
@@ -29,37 +28,48 @@ public class GLFWApplication {
                 throw new IllegalStateException("Unable to initialize GLFW");
             }
             GLFW_INITIALIZED = true;
-            appListener.onCreate();
         }
 
+        Window.Hint[] hints = {
+                new Window.Hint(GLFW_RESIZABLE, config.resizable ? GLFW_TRUE : GLFW_FALSE)
+        };
+        window = new Window(config.width, config.height, config.title, hints);
         glfwSwapInterval(config.vSync ? 1 : 0);
+        appListener.onCreate(this);
     }
 
     public void launch() {
-        if (running) return;;
+        if (running) return;
         running = true;
 
+        window.setVisible(true);
         appListener.init();
         int maxFramesToSkip = 5;
         int skippedFrames = 0;
         double lag = 0, current, elapsed;
         double previous = System.nanoTime();
         while(running) {
+            glfwPollEvents();
             current = System.nanoTime();
             elapsed = current - previous;
 
             previous = current;
             lag += elapsed;
 
-            while (lag >= config.nsPerUpdate && skippedFrames < maxFramesToSkip) {
+            while (lag >= nsPerUpdate && skippedFrames < maxFramesToSkip) {
                 appListener.fixedUpdate();
-                lag -= config.nsPerUpdate;
+                lag -= nsPerUpdate;
                 skippedFrames++;
             }
             skippedFrames = 0;
 
             appListener.update();
             appListener.render();
+            window.swapBuffers();
         }
+    }
+
+    public void exit() {
+        running = false;
     }
 }
