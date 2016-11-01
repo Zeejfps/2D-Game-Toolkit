@@ -21,6 +21,8 @@ public class Window implements Disposable {
     private final List<SizeCallback> sizeCallbacks = new ArrayList<>();
     private final List<InputListener> inputListeners = new ArrayList<>();
 
+    private int width;
+    private int height;
     private final long window;
     private final GLCapabilities capabilities;
 
@@ -62,6 +64,8 @@ public class Window implements Disposable {
     private GLFWWindowSizeCallback sizeCallback = new GLFWWindowSizeCallback() {
         @Override
         public void invoke(long window, int width, int height) {
+            Window.this.width = width;
+            Window.this.height = height;
             for (SizeCallback c : sizeCallbacks) {
                 c.onResize(Window.this, width, height);
             }
@@ -69,6 +73,9 @@ public class Window implements Disposable {
     };
 
     public Window(int width, int height, String title, Hint... hints) {
+        this.width = width;
+        this.height = height;
+
         // Setup window hints
         for (Hint hint : hints) {
             glfwWindowHint(hint.hint, hint.value);
@@ -131,6 +138,14 @@ public class Window implements Disposable {
     @Override
     public void dispose() {
         glfwDestroyWindow(window);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void setSize(int width, int height) {

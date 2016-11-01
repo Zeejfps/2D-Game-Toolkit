@@ -22,18 +22,23 @@ public class Renderer {
         this.window = window;
         this.camera = camera;
         this.fb = camera.getFramebuffer();
+        resize(window.getWidth(), window.getHeight());
         window.addSizeCallback((window1, width, height) -> {
-            double xScale= width;
-            double yScale= width / camera.getAspect();
-            if (yScale > height) {
-                xScale = height * camera.getAspect();
-                yScale = height;
-            }
-            fPosXS = (int)((width - xScale)  * 0.5f);
-            fPosYS = (int)((height - yScale) * 0.5f);
-            fPosXE = (int)Math.round(xScale) + fPosXS;
-            fPosYE = (int)Math.round(yScale) + fPosYS;
+            resize(width, height);
         });
+    }
+
+    private void resize(int width, int height) {
+        double xScale= width;
+        double yScale= width / camera.getAspect();
+        if (yScale > height) {
+            xScale = height * camera.getAspect();
+            yScale = height;
+        }
+        fPosXS = (int)((width - xScale)  * 0.5f);
+        fPosYS = (int)((height - yScale) * 0.5f);
+        fPosXE = (int)Math.round(xScale) + fPosXS;
+        fPosYE = (int)Math.round(yScale) + fPosYS;
     }
 
     private void checkIsDrawing() {
