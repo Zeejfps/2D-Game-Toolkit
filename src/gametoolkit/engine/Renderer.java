@@ -4,6 +4,10 @@ import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import tiled.core.MapLayer;
+import tiled.core.TMXMap;
+import tiled.core.Tile;
+import tiled.core.TileLayer;
 
 /**
  * Created by root on 10/31/16.
@@ -127,6 +131,23 @@ public class Renderer {
                 int srcPix = glyph.bitmap.pixel(srcx+srcy*glyph.bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     fb.pixels().put(x+y*fb.width(), color);
+            }
+        }
+    }
+
+    public void renderMap(TMXMap map) {
+        for (MapLayer layer : map.getLayers()) {
+            if (layer instanceof TileLayer) {
+                TileLayer l = (TileLayer)layer;
+                for (int y = 0; y < l.getHeight(); y++) {
+                    for (int x = 0; x < l.getWidth(); x++) {
+                        Tile t = l.getTileAt(x, y);
+                        if (t != null) {
+                            Sprite s = new Sprite(t.getBitmap());
+                            renderSprite(s, new Vec2f(x, camera.getSize() - y));
+                        }
+                    }
+                }
             }
         }
     }

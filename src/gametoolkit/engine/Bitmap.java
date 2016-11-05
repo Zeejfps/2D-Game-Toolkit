@@ -35,6 +35,11 @@ public class Bitmap {
         return pixels[index];
     }
 
+    public static Bitmap create(BufferedImage img) {
+        int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
+        return new Bitmap(img.getWidth(), img.getHeight(), pixels);
+    }
+
     public static Bitmap load(String path) throws IOException {
         BufferedImage img = ImageIO.read(Bitmap.class.getClassLoader().getResourceAsStream(path));
         int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());

@@ -4,6 +4,7 @@ import gametoolkit.engine.*;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import gametoolkit.utils.AssetLoader;
+import tiled.core.TMXMap;
 
 import java.awt.event.KeyEvent;
 import java.util.Random;
@@ -42,12 +43,14 @@ public class IsoGame extends Game {
 
     private App app;
 
+    private TMXMap tmxMap;
+
     @Override
     public void onCreate(App app) {
         this.app = app;
         window = new Window(640, 480, "Test");
         window.enableVSync(true);
-        camera = new Camera(6f, 4/3f, 16);
+        camera = new Camera(9f, 4/3f, 16);
         camera.setClearColor(0x00ffff);
         renderer = new Renderer(window, camera);
         input = new Input(window);
@@ -62,6 +65,7 @@ public class IsoGame extends Game {
         for (Sprite s : sprites) {
             s.pivot.set(0.5f, 0.7f);
         }
+        tmxMap = AssetLoader.loadMap("res/testmap.tmx");
         env = AssetLoader.loadSpriteSheet("BoxterEnviroment.png", 16, 16);
         time.start();
         startTime = System.currentTimeMillis();
@@ -114,6 +118,7 @@ public class IsoGame extends Game {
     @Override
     public void render() {
         renderer.begin();
+        renderer.renderMap(tmxMap);
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 renderer.renderSprite(env[map[i][j]], new Vec2f(j, camera.getSize() - i));

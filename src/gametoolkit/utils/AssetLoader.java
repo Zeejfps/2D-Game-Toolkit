@@ -3,6 +3,8 @@ package gametoolkit.utils;
 import gametoolkit.engine.Bitmap;
 import gametoolkit.engine.Font;
 import gametoolkit.engine.Sprite;
+import tiled.core.TMXMap;
+import tiled.io.TMXMapReader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -63,4 +65,16 @@ public class AssetLoader {
         }
         return new Sprite[0];
     }
+
+    public static TMXMap loadMap(String path) {
+        TMXMapReader reader = new TMXMapReader();
+        try {
+            TMXMap map = reader.readMap(path);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
