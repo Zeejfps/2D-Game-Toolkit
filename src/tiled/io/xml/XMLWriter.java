@@ -146,7 +146,7 @@ public class XMLWriter {
             throws IOException, XMLWriterException {
         if (!bDocumentOpen) {
             throw new XMLWriterException(
-                    "Can't start new element, no open document.");
+                    "Can't launch new element, no open document.");
         }
 
         if (bStartTagOpen) {
@@ -182,7 +182,7 @@ public class XMLWriter {
     public void endElement() throws IOException {
         String name = openElements.pop();
 
-        // If start tag still open, end with />, else with </name>.
+        // If launch tag still open, end with />, else with </name>.
         if (bStartTagOpen) {
             w.write("/>" + newLine);
             bStartTagOpen = false;
@@ -213,7 +213,7 @@ public class XMLWriter {
             w.write(" " + name + "=\"" + escapedContent + "\"");
         } else {
             throw new XMLWriterException(
-                    "Can't write attribute without open start tag.");
+                    "Can't write attribute without open launch tag.");
         }
     }
 

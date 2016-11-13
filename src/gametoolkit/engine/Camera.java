@@ -1,5 +1,7 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.backend.Framebuffer;
+import gametoolkit.engine.interfaces.Disposable;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 
@@ -45,20 +47,16 @@ public final class Camera implements Disposable {
         return pixelsPerUnit;
     }
 
-    public void setClearColor(int color) {
-        this.clearColor = color;
-    }
-
-    public int getClearColor() {
-        return clearColor;
-    }
-
     public void setSize(float size) {
         this.size = size;
     }
 
     public float getSize() {
         return size;
+    }
+
+    public void setClearColor(int color) {
+        this.clearColor = color;
     }
 
     public void setAspect(float aspect) {
@@ -72,5 +70,9 @@ public final class Camera implements Disposable {
     @Override
     public void dispose() {
         framebuffer.dispose();
+    }
+
+    void clear() {
+        framebuffer.clear(clearColor);
     }
 }

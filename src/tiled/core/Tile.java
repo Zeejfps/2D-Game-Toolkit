@@ -31,7 +31,6 @@ package tiled.core;
 
 import gametoolkit.engine.Bitmap;
 
-import java.awt.Image;
 import java.util.Properties;
 
 /**
@@ -142,7 +141,7 @@ public class Tile {
     }
 
     /**
-     * <p>getWidth.</p>
+     * <p>width.</p>
      *
      * @return a int.
      */
@@ -154,7 +153,7 @@ public class Tile {
     }
 
     /**
-     * <p>getHeight.</p>
+     * <p>height.</p>
      *
      * @return a int.
      */

@@ -1,5 +1,7 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.backend.Framebuffer;
+import gametoolkit.engine.backend.glfwWindow;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import org.lwjgl.opengl.GL11;
@@ -14,7 +16,7 @@ import tiled.core.TileLayer;
  */
 public class Renderer {
 
-    private final Window window;
+    private final glfwWindow window;
     private final Camera camera;
     private final Framebuffer fb;
 
@@ -22,11 +24,11 @@ public class Renderer {
     private int fPosXE, fPosYE;
     private boolean drawing;
 
-    public Renderer(Window window, Camera camera) {
+    public Renderer(glfwWindow window, Camera camera) {
         this.window = window;
         this.camera = camera;
         this.fb = camera.getFramebuffer();
-        resize(window.getWidth(), window.getHeight());
+        resize(window.width(), window.height());
         window.addSizeCallback((window1, width, height) -> {
             resize(width, height);
         });
@@ -52,7 +54,6 @@ public class Renderer {
     public void begin()  {
         if (drawing) throw new IllegalStateException("Must call Render.end()");
         drawing = true;
-        fb.clear(camera.getClearColor());
     }
 
     public void renderSprite(Sprite sprite, Vec2f worldPos) {

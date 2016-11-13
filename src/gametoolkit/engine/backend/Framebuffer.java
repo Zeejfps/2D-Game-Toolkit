@@ -1,5 +1,6 @@
-package gametoolkit.engine;
+package gametoolkit.engine.backend;
 
+import gametoolkit.engine.interfaces.Disposable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL30;
@@ -10,7 +11,7 @@ import java.nio.IntBuffer;
 /**
  * Created by root on 10/31/16.
  */
-public class Framebuffer implements Disposable {
+public final class Framebuffer implements Disposable {
 
     private int width, height;
     private IntBuffer pixels;
@@ -18,7 +19,7 @@ public class Framebuffer implements Disposable {
     private int textureHandle;
     private int framebufferHandle;
 
-    Framebuffer(int width, int height) {
+    public Framebuffer(int width, int height) {
         this.width = width;
         this.height = height;
         pixels = MemoryUtil.memAllocInt(width*height);;

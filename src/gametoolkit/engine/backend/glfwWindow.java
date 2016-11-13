@@ -1,7 +1,8 @@
-package gametoolkit.engine;
+package gametoolkit.engine.backend;
 
-import gametoolkit.engine.listeners.InputListener;
-import gametoolkit.engine.listeners.SizeCallback;
+import gametoolkit.engine.interfaces.Disposable;
+import gametoolkit.engine.backend.callback.InputCallback;
+import gametoolkit.engine.backend.callback.SizeCallback;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
@@ -15,11 +16,11 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public class Window implements Disposable {
+public class glfwWindow implements Disposable {
 
     // Callback lists
     private final List<SizeCallback> sizeCallbacks = new ArrayList<>();
-    private final List<InputListener> inputListeners = new ArrayList<>();
+    private final List<InputCallback> inputCallbacks = new ArrayList<>();
 
     private int width;
     private int height;
@@ -29,8 +30,8 @@ public class Window implements Disposable {
     private GLFWCursorPosCallback cursorPosCallback = new GLFWCursorPosCallback() {
         @Override
         public void invoke(long window, double x, double y) {
-            for (InputListener c : inputListeners) {
-                c.onCursorMove(Window.this, x, y);
+            for (InputCallback c : inputCallbacks) {
+                c.onCursorMove(glfwWindow.this, x, y);
             }
         }
     };
@@ -55,8 +56,8 @@ public class Window implements Disposable {
     private GLFWKeyCallback keyCallback = new GLFWKeyCallback() {
         @Override
         public void invoke(long window, int key, int scancode, int action, int mods) {
-            for (InputListener c : inputListeners) {
-                c.onKey(Window.this, key, scancode, action, mods);
+            for (InputCallback c : inputCallbacks) {
+                c.onKey(glfwWindow.this, key, scancode, action, mods);
             }
         }
     };
@@ -64,15 +65,15 @@ public class Window implements Disposable {
     private GLFWWindowSizeCallback sizeCallback = new GLFWWindowSizeCallback() {
         @Override
         public void invoke(long window, int width, int height) {
-            Window.this.width = width;
-            Window.this.height = height;
+            glfwWindow.this.width = width;
+            glfwWindow.this.height = height;
             for (SizeCallback c : sizeCallbacks) {
-                c.onResize(Window.this, width, height);
+                c.onResize(glfwWindow.this, width, height);
             }
         }
     };
 
-    public Window(int width, int height, String title, Hint... hints) {
+    public glfwWindow(int width, int height, String title, Hint... hints) {
         this.width = width;
         this.height = height;
 
@@ -140,11 +141,11 @@ public class Window implements Disposable {
         glfwDestroyWindow(window);
     }
 
-    public int getWidth() {
+    public int width() {
         return width;
     }
 
-    public int getHeight() {
+    public int height() {
         return height;
     }
 
@@ -164,11 +165,11 @@ public class Window implements Disposable {
         sizeCallbacks.remove(callback);
     }
 
-    public void addInputListener(InputListener callback) {
-        inputListeners.add(callback);
+    public void addInputListener(InputCallback callback) {
+        inputCallbacks.add(callback);
     }
 
-    public void removeInputListener(InputListener callback) {
-        inputListeners.remove(callback);
+    public void removeInputListener(InputCallback callback) {
+        inputCallbacks.remove(callback);
     }
 }
