@@ -1,5 +1,6 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.backend.glfwInputHandler;
 import gametoolkit.engine.backend.glfwWindow;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -23,7 +24,11 @@ public class Game {
         }
 
         glfwWindow window = new glfwWindow(config.windowWidth, config.windowHeight, config.windowTitle);
+        glfwInputHandler input = new glfwInputHandler(window);
         Display.init(window);
+        Input.init(input);
+
+        glfwSwapInterval(config.vSync ? 1 : 0);
     }
 
     private void loop(Scene scene) {

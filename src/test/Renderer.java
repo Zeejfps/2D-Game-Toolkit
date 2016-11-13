@@ -1,5 +1,9 @@
-package gametoolkit.engine;
+package test;
 
+import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.Camera;
+import gametoolkit.engine.Font;
+import gametoolkit.engine.Sprite;
 import gametoolkit.engine.backend.Framebuffer;
 import gametoolkit.engine.backend.glfwWindow;
 import gametoolkit.math.Vec2f;

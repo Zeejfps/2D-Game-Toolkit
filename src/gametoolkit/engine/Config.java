@@ -10,6 +10,7 @@ public class Config {
     double nsPerUpdate = NS_IN_SC / 60.0;
     int windowWidth = 640, windowHeight = 480;
     String windowTitle = "Untitled Game";
+    boolean vSync = false;
 
     public void setFixedUpdateInterval(float interval) {
         nsPerUpdate = NS_IN_SC / interval;
@@ -22,5 +23,9 @@ public class Config {
 
     public void setWindowTitle(String title) {
         this.windowTitle = title;
+    }
+
+    public void enableVSync(boolean vSync) {
+        this.vSync = vSync;
     }
 }

@@ -1,8 +1,6 @@
 package gametoolkit.engine.backend;
 
-import gametoolkit.engine.backend.glfwWindow;
 import gametoolkit.engine.backend.callback.InputCallback;
-import gametoolkit.math.Vec2f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -17,15 +15,14 @@ public class glfwInputHandler {
     private boolean[] keysPressed = new boolean[MAX_KEYS];
     private boolean[] keysReleased = new boolean[MAX_KEYS];
 
-    public final Vec2f mousePosition;
+    public double mouseX, mouseY;
 
     public glfwInputHandler(glfwWindow window) {
-        mousePosition = new Vec2f();
         window.addInputListener(new InputCallback() {
             @Override
             public void onCursorMove(glfwWindow window, double x, double y) {
-                mousePosition.x = (float)x;
-                mousePosition.y = (float)y;
+                mouseX = (float)x;
+                mouseY = (float)y;
             }
 
             @Override

@@ -1,7 +1,11 @@
 package test;
 
 import gametoolkit.engine.*;
+import gametoolkit.engine.renderers.TextRenderer;
+import gametoolkit.math.Vec2i;
 
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -11,8 +15,18 @@ public class IsoGameMainScene extends Scene {
 
     private static Random rand = new Random(System.nanoTime());
 
+    private TextRenderer textRenderer;
+    private Font font;
+
     public IsoGameMainScene(Game game) {
         super(game);
+        try {
+            font = Font.load("fonts/Roboto.fnt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        mainCamera.setClearColor(0xff00ff);
+        textRenderer = new TextRenderer(font, mainCamera.getFramebuffer());
     }
 
     @Override
@@ -27,7 +41,7 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onUpdate() {
-        if (Display.shouldClose()) {
+        if (Display.shouldClose() || Input.getKeyPressed(KeyEvent.VK_A)) {
             game.exit();
         }
     }
@@ -39,7 +53,7 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onRender() {
-
+        textRenderer.renderString("Test", new Vec2i(100, 100), 0);
     }
 
     @Override

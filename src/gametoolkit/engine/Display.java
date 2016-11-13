@@ -43,7 +43,7 @@ public class Display {
         if (needResize) {
             int width = window.width();
             int height = window.height();
-            double aspect = fb.width() / fb.height();
+            double aspect = fb.width() / (float)fb.height();
             double xScale= width;
             double yScale= width / aspect;
             if (yScale > height) {

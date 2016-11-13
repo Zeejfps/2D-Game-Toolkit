@@ -116,10 +116,6 @@ public class glfwWindow implements Disposable {
         }
     }
 
-    public void enableVSync(boolean enable) {
-        glfwSwapInterval(enable ? 1 : 0);
-    }
-
     public void swapBuffers() {
         glfwSwapBuffers(window);
     }
