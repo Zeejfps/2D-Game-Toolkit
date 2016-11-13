@@ -1,7 +1,7 @@
 package gametoolkit.engine;
 
 import gametoolkit.engine.backend.Framebuffer;
-import gametoolkit.engine.backend.glfwWindow;
+import gametoolkit.engine.backend.GlfwWindow;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -10,12 +10,12 @@ import org.lwjgl.opengl.GL30;
  */
 public class Display {
 
-    private static glfwWindow window;
+    private static GlfwWindow window;
 
     private static int fPosXS, fPosYS, fPosXE, fPosYE;
     private static boolean needResize = true;
 
-    static void init(glfwWindow window) {
+    static void init(GlfwWindow window) {
         Display.window = window;
         window.addSizeCallback((window1, width, height) -> {
             needResize = true;
@@ -40,6 +40,7 @@ public class Display {
 
     public static void swapBuffers(Framebuffer fb) {
 
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         if (needResize) {
             int width = window.width();
             int height = window.height();

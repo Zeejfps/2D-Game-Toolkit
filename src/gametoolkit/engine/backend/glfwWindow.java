@@ -16,7 +16,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 /**
  * Created by Zeejfps on 10/29/2016.
  */
-public class glfwWindow implements Disposable {
+public class GlfwWindow implements Disposable {
 
     // Callback lists
     private final List<SizeCallback> sizeCallbacks = new ArrayList<>();
@@ -31,7 +31,7 @@ public class glfwWindow implements Disposable {
         @Override
         public void invoke(long window, double x, double y) {
             for (InputCallback c : inputCallbacks) {
-                c.onCursorMove(glfwWindow.this, x, y);
+                c.onCursorMove(GlfwWindow.this, x, y);
             }
         }
     };
@@ -57,7 +57,7 @@ public class glfwWindow implements Disposable {
         @Override
         public void invoke(long window, int key, int scancode, int action, int mods) {
             for (InputCallback c : inputCallbacks) {
-                c.onKey(glfwWindow.this, key, scancode, action, mods);
+                c.onKey(GlfwWindow.this, key, scancode, action, mods);
             }
         }
     };
@@ -65,15 +65,15 @@ public class glfwWindow implements Disposable {
     private GLFWWindowSizeCallback sizeCallback = new GLFWWindowSizeCallback() {
         @Override
         public void invoke(long window, int width, int height) {
-            glfwWindow.this.width = width;
-            glfwWindow.this.height = height;
+            GlfwWindow.this.width = width;
+            GlfwWindow.this.height = height;
             for (SizeCallback c : sizeCallbacks) {
-                c.onResize(glfwWindow.this, width, height);
+                c.onResize(GlfwWindow.this, width, height);
             }
         }
     };
 
-    public glfwWindow(int width, int height, String title, Hint... hints) {
+    public GlfwWindow(int width, int height, String title, Hint... hints) {
         this.width = width;
         this.height = height;
 

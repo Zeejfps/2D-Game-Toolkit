@@ -1,8 +1,11 @@
 package test;
 
 import gametoolkit.engine.*;
+import gametoolkit.engine.renderers.SpriteRenderer;
 import gametoolkit.engine.renderers.TextRenderer;
+import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
+import gametoolkit.utils.AssetLoader;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -16,22 +19,20 @@ public class IsoGameMainScene extends Scene {
     private static Random rand = new Random(System.nanoTime());
 
     private TextRenderer textRenderer;
+    private SpriteRenderer spriteRenderer;
     private Font font;
+    private Sprite sprite;
 
-    public IsoGameMainScene(Game game) {
-        super(game);
-        try {
-            font = Font.load("fonts/Roboto.fnt");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public IsoGameMainScene() {
         mainCamera.setClearColor(0xff00ff);
-        textRenderer = new TextRenderer(font, mainCamera.getFramebuffer());
+        textRenderer = new TextRenderer(mainCamera.getFramebuffer());
+        spriteRenderer = new SpriteRenderer(mainCamera);
     }
 
     @Override
     protected void onLoad() {
-
+        font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
+        sprite = AssetLoader.loadSprite("test.png");
     }
 
     @Override
@@ -41,8 +42,12 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onUpdate() {
+        if (Input.getKeyPressed(KeyEvent.VK_E)) {
+            Game.loadScene(new TestScene());
+        }
+
         if (Display.shouldClose() || Input.getKeyPressed(KeyEvent.VK_A)) {
-            game.exit();
+            Game.exit();
         }
     }
 
@@ -53,7 +58,8 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onRender() {
-        textRenderer.renderString("Test", new Vec2i(100, 100), 0);
+        textRenderer.renderString("Test String?", 0, 100, font, 0);
+        spriteRenderer.renderSprite(sprite, new Vec2f(0, 0));
     }
 
     @Override
@@ -67,8 +73,8 @@ public class IsoGameMainScene extends Scene {
         config.setWindowSize(640, 480);
         config.setWindowTitle("Iso Game");
 
-        Game game = new Game(config);
-        game.launch(new IsoGameMainScene(game));
+        Game.init(config);
+        Game.launch(new IsoGameMainScene());
     }
 
 }

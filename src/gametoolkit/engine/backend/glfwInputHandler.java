@@ -7,7 +7,7 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * Created by Zeejfps on 6/15/2016.
  */
-public class glfwInputHandler {
+public class GlfwInputHandler {
 
     private static final int MAX_KEYS = 600;
 
@@ -17,16 +17,16 @@ public class glfwInputHandler {
 
     public double mouseX, mouseY;
 
-    public glfwInputHandler(glfwWindow window) {
+    public GlfwInputHandler(GlfwWindow window) {
         window.addInputListener(new InputCallback() {
             @Override
-            public void onCursorMove(glfwWindow window, double x, double y) {
+            public void onCursorMove(GlfwWindow window, double x, double y) {
                 mouseX = (float)x;
                 mouseY = (float)y;
             }
 
             @Override
-            public void onKey(glfwWindow window, int key, int scancode, int action, int mods) {
+            public void onKey(GlfwWindow window, int key, int scancode, int action, int mods) {
                 switch (action) {
                     case GLFW_REPEAT:
                     case GLFW_PRESS:

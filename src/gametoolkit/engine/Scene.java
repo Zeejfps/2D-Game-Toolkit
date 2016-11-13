@@ -5,17 +5,17 @@ package gametoolkit.engine;
  */
 public abstract class Scene {
 
+    private boolean loaded;
+
     protected Camera mainCamera;
 
-    public final Game game;
-
-    public Scene(Game game) {
-        this.game = game;
+    public Scene() {
         mainCamera = new Camera(3, 16f/9, 32);
     }
 
     void load() {
         onLoad();
+        loaded = true;
     }
 
     void update() {
@@ -34,6 +34,12 @@ public abstract class Scene {
 
     void unload() {
         onUnload();
+        mainCamera.dispose();
+        loaded = false;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
     }
 
     public void setCamera(Camera camera) {

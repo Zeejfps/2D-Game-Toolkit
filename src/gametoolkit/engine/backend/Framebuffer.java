@@ -22,7 +22,7 @@ public final class Framebuffer implements Disposable {
     public Framebuffer(int width, int height) {
         this.width = width;
         this.height = height;
-        pixels = MemoryUtil.memAllocInt(width*height);;
+        pixels = MemoryUtil.memAllocInt(width*height);
 
         framebufferID = GL30.glGenFramebuffers();
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferID);

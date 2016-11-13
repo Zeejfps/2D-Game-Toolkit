@@ -2,24 +2,21 @@ package gametoolkit.engine.renderers;
 
 import gametoolkit.engine.Font;
 import gametoolkit.engine.backend.Framebuffer;
-import gametoolkit.math.Vec2i;
 
 /**
  * Created by Zeejfps on 11/13/2016.
  */
 public class TextRenderer {
 
-    private Font font;
     private Framebuffer fb;
 
-    public TextRenderer(Font font, Framebuffer framebuffer) {
-        this.font = font;
+    public TextRenderer(Framebuffer framebuffer) {
         this.fb = framebuffer;
     }
 
-    public void renderString(String str, Vec2i screenPos, int color) {
-        int xCursor = screenPos.x;
-        int yCursor = screenPos.y;
+    public void renderString(String str, int x, int y, Font font, int color) {
+        int xCursor = x;
+        int yCursor = y;
         char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
@@ -30,7 +27,7 @@ public class TextRenderer {
             }
             if (c == '\n') {
                 yCursor -= font.getLineHeight();
-                xCursor = screenPos.x;
+                xCursor = x;
             }
             else {
                 Font.Glyph glyph = font.getChar((int)c);
@@ -62,5 +59,4 @@ public class TextRenderer {
             }
         }
     }
-
 }

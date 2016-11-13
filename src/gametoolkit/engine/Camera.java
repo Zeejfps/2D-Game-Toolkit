@@ -24,6 +24,13 @@ public final class Camera implements Disposable {
         setSize(size);
         setAspect(aspect);
         setPixelsPerUnit(pixelsPerUnit);
+        resize();
+    }
+
+    private void resize() {
+        if (framebuffer != null) {
+            framebuffer.dispose();
+        }
         int h = (int)(2*this.size*pixelsPerUnit);
         int w = (int)(h*aspect);
         framebuffer = new Framebuffer(w, h);
@@ -41,6 +48,7 @@ public final class Camera implements Disposable {
 
     public void setPixelsPerUnit(int pixelsPerUnit) {
         this.pixelsPerUnit = pixelsPerUnit > 0 ? pixelsPerUnit : 1;
+        resize();
     }
 
     public int getPixelsPerUnit() {
@@ -49,6 +57,7 @@ public final class Camera implements Disposable {
 
     public void setSize(float size) {
         this.size = size;
+        resize();
     }
 
     public float getSize() {
@@ -61,6 +70,7 @@ public final class Camera implements Disposable {
 
     public void setAspect(float aspect) {
         this.aspect = aspect;
+        resize();
     }
 
     public float getAspect() {

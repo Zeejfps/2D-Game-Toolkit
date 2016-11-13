@@ -1,6 +1,6 @@
 package gametoolkit.engine;
 
-import gametoolkit.engine.backend.glfwInputHandler;
+import gametoolkit.engine.backend.GlfwInputHandler;
 import gametoolkit.math.Vec2f;
 
 /**
@@ -8,10 +8,10 @@ import gametoolkit.math.Vec2f;
  */
 public class Input {
 
-    private static glfwInputHandler handler;
+    private static GlfwInputHandler handler;
     private static Vec2f mousePos = new Vec2f();
 
-    static void init(glfwInputHandler handler) {
+    static void init(GlfwInputHandler handler) {
         Input.handler = handler;
     }
 

@@ -5,7 +5,7 @@ import gametoolkit.engine.Camera;
 import gametoolkit.engine.Font;
 import gametoolkit.engine.Sprite;
 import gametoolkit.engine.backend.Framebuffer;
-import gametoolkit.engine.backend.glfwWindow;
+import gametoolkit.engine.backend.GlfwWindow;
 import gametoolkit.math.Vec2f;
 import gametoolkit.math.Vec2i;
 import org.lwjgl.opengl.GL11;
@@ -20,7 +20,7 @@ import tiled.core.TileLayer;
  */
 public class Renderer {
 
-    private final glfwWindow window;
+    private final GlfwWindow window;
     private final Camera camera;
     private final Framebuffer fb;
 
@@ -28,7 +28,7 @@ public class Renderer {
     private int fPosXE, fPosYE;
     private boolean drawing;
 
-    public Renderer(glfwWindow window, Camera camera) {
+    public Renderer(GlfwWindow window, Camera camera) {
         this.window = window;
         this.camera = camera;
         this.fb = camera.getFramebuffer();

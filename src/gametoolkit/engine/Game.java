@@ -1,7 +1,7 @@
 package gametoolkit.engine;
 
-import gametoolkit.engine.backend.glfwInputHandler;
-import gametoolkit.engine.backend.glfwWindow;
+import gametoolkit.engine.backend.GlfwInputHandler;
+import gametoolkit.engine.backend.GlfwWindow;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -11,10 +11,12 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Game {
 
-    private boolean running;
-    private double nsPerUpdate;
+    private Game() {}
 
-    public Game(Config config) {
+    private static Scene currScene;
+    private static double nsPerUpdate;
+
+    public static void init(Config config) {
         nsPerUpdate = config.nsPerUpdate;
 
         // Initialize backend
@@ -23,21 +25,20 @@ public class Game {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
-        glfwWindow window = new glfwWindow(config.windowWidth, config.windowHeight, config.windowTitle);
-        glfwInputHandler input = new glfwInputHandler(window);
+        GlfwWindow window = new GlfwWindow(config.windowWidth, config.windowHeight, config.windowTitle);
+        GlfwInputHandler input = new GlfwInputHandler(window);
         Display.init(window);
         Input.init(input);
 
         glfwSwapInterval(config.vSync ? 1 : 0);
     }
 
-    private void loop(Scene scene) {
-        running = true;
+    private static void loop(Scene scene) {
         int maxFramesToSkip = 5;
         int skippedFrames = 0;
         double lag = 0, current, elapsed;
         double previous = System.nanoTime();
-        while(running) {
+        while(scene.isLoaded()) {
             glfwPollEvents();
             current = System.nanoTime();
             elapsed = current - previous;
@@ -57,9 +58,18 @@ public class Game {
         }
     }
 
-    public void launch(Scene scene) {
+    public static void loadScene(Scene scene) {
+        if (currScene != null) {
+            currScene.unload();
+        }
+        currScene = scene;
+        currScene.load();
+        loop(currScene);
+    }
+
+    public static void launch(Scene scene) {
         try {
-            loop(scene);
+            loadScene(scene);
         }
         finally {
             glfwTerminate();
@@ -67,7 +77,9 @@ public class Game {
         }
     }
 
-    public void exit() {
-        running = false;
+    public static void exit() {
+        if (currScene != null) {
+            currScene.unload();
+        }
     }
 }
