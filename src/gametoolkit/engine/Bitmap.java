@@ -13,6 +13,10 @@ public class Bitmap {
     private final int height;
     private final int[] pixels;
 
+    public Bitmap(int width, int height) {
+        this(width, height, new int[width*height]);
+    }
+
     public Bitmap(int width, int height, int[] pixels) {
         this.width = width;
         this.height = height;

@@ -22,8 +22,11 @@ public class IsoGameMainScene extends Scene {
     private SpriteRenderer spriteRenderer;
     private Font font;
     private Sprite sprite;
+    private Bitmap bitmap;
 
     public IsoGameMainScene() {
+        mainCamera.setSize(4);
+        mainCamera.setPixelsPerUnit(32);
         mainCamera.setClearColor(0xff00ff);
         textRenderer = new TextRenderer(mainCamera.getFramebuffer());
         spriteRenderer = new SpriteRenderer(mainCamera);
@@ -33,6 +36,7 @@ public class IsoGameMainScene extends Scene {
     protected void onLoad() {
         font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
         sprite = AssetLoader.loadSprite("test.png");
+        bitmap = AssetLoader.loadBitmap("test.png");
     }
 
     @Override
@@ -53,13 +57,15 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onFixedUpdate() {
-
+        angle += 0.1f;
     }
 
+    float angle = 0f;
     @Override
     protected void onRender() {
-        textRenderer.renderString("Test String?", 0, 100, font, 0);
-        spriteRenderer.renderSprite(sprite, new Vec2f(0, 0));
+        //textRenderer.renderString("Test String?", 0, 100, font, 0);
+        //spriteRenderer.renderSprite(sprite, new Vec2f(0, 0));
+        spriteRenderer.renderBitmap(bitmap, 0, 0, angle);
     }
 
     @Override
