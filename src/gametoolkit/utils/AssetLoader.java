@@ -20,7 +20,7 @@ public class AssetLoader {
         try {
             return Font.load(path);
         } catch (IOException e) {
-            return new Font(new HashMap<>(), new HashMap<>(), 0);
+            return null;//new Font(new HashMap<>(), new HashMap<>(), 0);
         }
     }
 

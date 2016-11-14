@@ -77,7 +77,7 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onUnload() {
-
+        //bitmap.dispose();
     }
 
     public static void main(String[] args) {

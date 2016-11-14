@@ -92,7 +92,7 @@ public class Renderer {
         renderBitmap(bitmap, screenPos.x, screenPos.y);
     }
 
-    public void renderString(String str, Vec2i screenPos, Font font, int color) {
+    /*public void renderString(String str, Vec2i screenPos, Font font, int color) {
         checkIsDrawing();
         int xCursor = screenPos.x;
         int yCursor = screenPos.y;
@@ -119,9 +119,9 @@ public class Renderer {
                 xCursor += glyph.xAdvance;
             }
         }
-    }
+    }*/
 
-    public void renderGlyph(Font.Glyph glyph, int xPos, int yPos, int color){
+    /*public void renderGlyph(Font.Glyph glyph, int xPos, int yPos, int color){
         checkIsDrawing();
         int xs = xPos < 0 ? 0 : xPos;
         int ys = yPos > fb.height() ? fb.height() : yPos;
@@ -138,7 +138,7 @@ public class Renderer {
                     fb.pixels().put(x+y*fb.width(), color);
             }
         }
-    }
+    }*/
 
     public void renderMap(TMXMap map) {
         for (MapLayer layer : map.getLayers()) {

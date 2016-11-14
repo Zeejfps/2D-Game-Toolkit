@@ -1,5 +1,6 @@
 package gametoolkit.engine.backend;
 
+import gametoolkit.utils.IOUtils;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
@@ -13,10 +14,17 @@ import static org.lwjgl.stb.STBImage.*;
  */
 public class Bitmap {
 
-    private final int width, height, ncomps;
-    private final IntBuffer pixels;
+    private int width, height, ncomps;
+    private IntBuffer pixels;
 
-    public Bitmap(int width, int height, int ncomps, IntBuffer pixels) {
+    public Bitmap(int width, int height, int ncomps) {
+        this.width = width;
+        this.height = height;
+        this.ncomps = ncomps;
+        this.pixels = BufferUtils.createIntBuffer(width*height);
+    }
+
+    private Bitmap(int width, int height, int ncomps, IntBuffer pixels) {
         this.width = width;
         this.height = height;
         this.ncomps = ncomps;
@@ -53,18 +61,19 @@ public class Bitmap {
         IntBuffer h = BufferUtils.createIntBuffer(1);
         IntBuffer c = BufferUtils.createIntBuffer(1);
 
-        ByteBuffer pixels = stbi_load_from_memory(data, w, h, c, 0);
-        if (pixels == null) {
+        ByteBuffer img = stbi_load_from_memory(data, w, h, c, 0);
+        if (img == null) {
             throw new IOException("Failed to load bitmap: " + stbi_failure_reason());
         }
 
-        pixels.asIntBuffer();
+        IntBuffer pixels = img.asIntBuffer();
+        stbi_image_free(img);
 
         int width = w.get(0);
         int height = h.get(0);
         int ncomps = c.get(0);
 
-        return new Bitmap(width, height, ncomps, pixels.asIntBuffer());
+        return new Bitmap(width, height, ncomps, pixels);
     }
 
 }

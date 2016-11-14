@@ -1,4 +1,4 @@
-package gametoolkit.engine.backend;
+package gametoolkit.utils;
 
 import org.lwjgl.BufferUtils;
 
