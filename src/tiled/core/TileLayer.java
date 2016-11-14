@@ -84,10 +84,10 @@ public class TileLayer extends MapLayer {
     }
 
     /**
-     * Construct a TileLayer from the given width and height.
+     * Construct a TileLayer from the given getWidth and getHeight.
      *
-     * @param w width in tiles
-     * @param h height in tiles
+     * @param w getWidth in tiles
+     * @param h getHeight in tiles
      */
     public TileLayer(int w, int h) {
         super(w, h);
@@ -113,8 +113,8 @@ public class TileLayer extends MapLayer {
      * <p>Constructor for TileLayer.</p>
      *
      * @param m the map this layer is part of
-     * @param w width in tiles
-     * @param h height in tiles
+     * @param w getWidth in tiles
+     * @param h getHeight in tiles
      */
     public TileLayer(TMXMap m, int w, int h) {
         super(w, h);

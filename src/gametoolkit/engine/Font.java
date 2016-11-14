@@ -1,5 +1,7 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.backend.Bitmap;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -16,11 +18,18 @@ public class Font {
 
     private final Map<KeyPair, Integer> kernings;
     private final Map<Integer, Glyph> fontChars;
+    private final Map<Integer, Bitmap> pages;
     private final int lineHeight;
 
-    public Font(Map<Integer, Glyph> fontChars, Map<KeyPair, Integer> kernings, int lineHeight) {
+    public Font(
+            Map<Integer, Glyph> fontChars,
+            Map<KeyPair, Integer> kernings,
+            Map<Integer, Bitmap> pages,
+            int lineHeight
+    ) {
         this.kernings = kernings;
         this.fontChars = fontChars;
+        this.pages = pages;
         this.lineHeight = lineHeight;
     }
 
@@ -43,15 +52,18 @@ public class Font {
     public static class Glyph {
 
         public final int xOffset, yOffset, xAdvance;
-        public final Bitmap bitmap;
+        public final int x, y, width, height, page;
 
-        private Glyph(int xOffset, int yOffset, int xAdvance, Bitmap bitmap) {
+        private Glyph(int xOffset, int yOffset, int xAdvance, int x, int y, int width, int height, int page) {
             this.xOffset = xOffset;
             this.yOffset = yOffset;
-            this.xAdvance = xAdvance;
-            this.bitmap = bitmap;
+            this.xAdvance = xAdvance;;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.page = page;
         }
-
     }
 
     static class KeyPair {
@@ -99,6 +111,7 @@ public class Font {
         matcher = pattern.matcher(commonLine);
         addToMap(matcher, commonMap);
 
+        Map<Integer, Bitmap> pageBitmaps = new HashMap<>();
         int pages = Integer.parseInt(commonMap.get("pages"));
         for (int pageIndex = 0; pageIndex < pages; pageIndex++) {
 
@@ -109,9 +122,9 @@ public class Font {
             addToMap(matcher, pageMap);
 
             String fileName = pageMap.get("file");
-            BufferedImage pageImg = ImageIO.read(
-                    Font.class.getClassLoader().getResourceAsStream("fonts/" + fileName)
-            );
+
+            Bitmap pageBitmap = Bitmap.load(fileName);
+            pageBitmaps.put(pageIndex, pageBitmap);
 
             Map<String, String> charsMap = new HashMap<>();
             // Read number of chars
@@ -137,12 +150,10 @@ public class Font {
                 int xOffset = Integer.parseInt(charMap.get("xoffset"));
                 int yOffset = Integer.parseInt(charMap.get("yoffset"));
                 int xAdvance = Integer.parseInt(charMap.get("xadvance"));
-                //int page = Integer.parseInt(charMap.get("page"));
+                int page = Integer.parseInt(charMap.get("page"));
                 //int chnl = Integer.parseInt(charMap.get("chnl"));
 
-                int[] pixels = pageImg.getRGB(x, y, width, height, null, 0, width);
-                Bitmap bitmap = new Bitmap(width, height, pixels);
-                Glyph glyph = new Glyph(xOffset, yOffset, xAdvance, bitmap);
+                Glyph glyph = new Glyph(xOffset, yOffset, xAdvance, x, y, width, height, page);
                 fontChars.put(id, glyph);
             }
 
@@ -172,7 +183,7 @@ public class Font {
         }
 
         int lineHeight = Integer.parseInt(commonMap.get("lineHeight"));
-        return new Font(fontChars, kernings, lineHeight);
+        return new Font(fontChars, kernings, pageBitmaps, lineHeight);
     }
 
     private static void addToMap(Matcher m, Map<String, String> map) {

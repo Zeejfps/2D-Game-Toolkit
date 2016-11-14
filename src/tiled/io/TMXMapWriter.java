@@ -186,8 +186,8 @@ public class TMXMapWriter {
                 break;
         }
 
-        w.writeAttribute("width", map.getWidth());
-        w.writeAttribute("height", map.getHeight());
+        w.writeAttribute("getWidth", map.getWidth());
+        w.writeAttribute("getHeight", map.getHeight());
         w.writeAttribute("tilewidth", map.getTileWidth());
         w.writeAttribute("tileheight", map.getTileHeight());
 
@@ -370,10 +370,10 @@ public class TMXMapWriter {
 
         w.writeAttribute("name", l.getName());
         if (bounds.width != 0) {
-            w.writeAttribute("width", bounds.width);
+            w.writeAttribute("getWidth", bounds.width);
         }
         if (bounds.height != 0) {
-            w.writeAttribute("height", bounds.height);
+            w.writeAttribute("getHeight", bounds.height);
         }
         if (bounds.x != 0) {
             w.writeAttribute("x", bounds.x);
@@ -515,8 +515,8 @@ public class TMXMapWriter {
 
     private void writeImage(Tile t, XMLWriter w, String wp) throws IOException {
         w.startElement("image");
-        w.writeAttribute("width", t.getWidth());
-        w.writeAttribute("height", t.getHeight());
+        w.writeAttribute("getWidth", t.getWidth());
+        w.writeAttribute("getHeight", t.getHeight());
         w.writeAttribute("source", getRelativePath(wp, t.getSource()));
         w.endElement();
     }
@@ -551,10 +551,10 @@ public class TMXMapWriter {
         w.writeAttribute("y", mapObject.getY());
 
         if (mapObject.getWidth() != 0) {
-            w.writeAttribute("width", mapObject.getWidth());
+            w.writeAttribute("getWidth", mapObject.getWidth());
         }
         if (mapObject.getHeight() != 0) {
-            w.writeAttribute("height", mapObject.getHeight());
+            w.writeAttribute("getHeight", mapObject.getHeight());
         }
 
         writeProperties(mapObject.getProperties(), w);

@@ -35,25 +35,25 @@ public class TextRenderer {
 
                 int xRender = xCursor + glyph.xOffset + kerning;
                 int yRender = yCursor - glyph.yOffset;
-                renderGlyph(glyph, xRender, yRender, color);
+                renderGlyph(glyph, xRender, yRender, color, font);
 
                 xCursor += glyph.xAdvance;
             }
         }
     }
 
-    private void renderGlyph(Font.Glyph glyph, int xPos, int yPos, int color){
+    private void renderGlyph(Font.Glyph glyph, int xPos, int yPos, int color, Font font){
         int xs = xPos < 0 ? 0 : xPos;
         int ys = yPos > fb.height() ? fb.height() : yPos;
-        int xe = xPos + glyph.bitmap.width();
+        int xe = xPos + glyph.width;
         xe = xe > fb.width()  ? fb.width() : xe;
-        int ye = yPos - glyph.bitmap.height();
+        int ye = yPos - glyph.height;
         ye = ye < 0 ? 0 : ye;
 
         int x, y, srcx, srcy;
         for (srcy = -(ys-yPos), y = ys-1; y >= ye; y--, srcy++) {
             for (srcx = xs-xPos, x = xs; x < xe; x++, srcx++) {
-                int srcPix = glyph.bitmap.pixel(srcx+srcy*glyph.bitmap.width());
+                int srcPix = 0;//glyph.bitmap.pixels(srcx+srcy*glyph.bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     fb.pixels().put(x+y*fb.width(), color);
             }

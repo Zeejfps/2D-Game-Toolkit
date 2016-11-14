@@ -77,8 +77,8 @@ public class TMXMap implements Iterable<MapLayer> {
      * <p>
      * Constructor for TMXMap.</p>
      *
-     * @param width the map width in tiles.
-     * @param height the map height in tiles.
+     * @param width the map getWidth in tiles.
+     * @param height the map getHeight in tiles.
      */
     public TMXMap(int width, int height) {
         layers = new ArrayList<>();
@@ -222,8 +222,8 @@ public class TMXMap implements Iterable<MapLayer> {
      * shift.
      *
      * @see tiled.core.MapLayer#resize
-     * @param width The new width of the map.
-     * @param height The new height of the map.
+     * @param width The new getWidth of the map.
+     * @param height The new getHeight of the map.
      * @param dx The shift in x direction in tiles.
      * @param dy The shift in y direction in tiles.
      */
@@ -340,18 +340,18 @@ public class TMXMap implements Iterable<MapLayer> {
     }
 
     /**
-     * Sets a new tile width.
+     * Sets a new tile getWidth.
      *
-     * @param width the new tile width
+     * @param width the new tile getWidth
      */
     public void setTileWidth(int width) {
         tileWidth = width;
     }
 
     /**
-     * Sets a new tile height.
+     * Sets a new tile getHeight.
      *
-     * @param height the new tile height
+     * @param height the new tile getHeight
      */
     public void setTileHeight(int height) {
         tileHeight = height;
@@ -385,7 +385,7 @@ public class TMXMap implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns width of map in tiles.
+     * Returns getWidth of map in tiles.
      *
      * @return int
      */
@@ -394,7 +394,7 @@ public class TMXMap implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns height of map in tiles.
+     * Returns getHeight of map in tiles.
      *
      * @return int
      */
@@ -403,18 +403,18 @@ public class TMXMap implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns default tile width for this map.
+     * Returns default tile getWidth for this map.
      *
-     * @return the default tile width
+     * @return the default tile getWidth
      */
     public int getTileWidth() {
         return tileWidth;
     }
 
     /**
-     * Returns default tile height for this map.
+     * Returns default tile getHeight for this map.
      *
-     * @return the default tile height
+     * @return the default tile getHeight
      */
     public int getTileHeight() {
         return tileHeight;
@@ -434,10 +434,10 @@ public class TMXMap implements Iterable<MapLayer> {
     }
 
     /**
-     * Returns the maximum tile height. This is the height of the highest tile
-     * in all tileSets or the tile height used by this map if it's smaller.
+     * Returns the maximum tile getHeight. This is the getHeight of the highest tile
+     * in all tileSets or the tile getHeight used by this map if it's smaller.
      *
-     * @return int The maximum tile height
+     * @return int The maximum tile getHeight
      */
     public int getTileHeightMax() {
         int maxHeight = tileHeight;
@@ -483,7 +483,7 @@ public class TMXMap implements Iterable<MapLayer> {
     /**
      * {@inheritDoc}
      *
-     * Returns string describing the map. The form is <code>TMXMap[width x height
+     * Returns string describing the map. The form is <code>TMXMap[getWidth x getHeight
      * x layers][tileWidth x tileHeight]</code>, for example <code>
      * TMXMap[64x64x2][24x24]</code>.
      */

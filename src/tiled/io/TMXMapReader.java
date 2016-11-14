@@ -56,7 +56,7 @@ import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.backend.Bitmap;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -444,8 +444,8 @@ public class TMXMapReader {
         final String gid = getAttributeValue(t, "gid");
         final double x = getDoubleAttribute(t, "x", 0);
         final double y = getDoubleAttribute(t, "y", 0);
-        final double width = getDoubleAttribute(t, "width", 0);
-        final double height = getDoubleAttribute(t, "height", 0);
+        final double width = getDoubleAttribute(t, "getWidth", 0);
+        final double height = getDoubleAttribute(t, "getHeight", 0);
 
         MapObject obj = new MapObject(x, y, width, height);
         obj.setShape(obj.getBounds());
@@ -572,7 +572,7 @@ public class TMXMapReader {
             if ("image".equalsIgnoreCase(child.getNodeName())) {
                 BufferedImage img = (BufferedImage) unmarshalImage(child, baseDir);
                 int[] pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
-                tile.setBitmap(new Bitmap(img.getWidth(), img.getHeight(), pixels));
+                //tile.setBitmap(new Bitmap(img.getWidth(), img.getHeight(), pixels));
             } else if ("animation".equalsIgnoreCase(child.getNodeName())) {
                 // TODO: fill this in once TMXMapWriter is complete
             }
@@ -620,8 +620,8 @@ public class TMXMapReader {
      * @throws Exception
      */
     private MapLayer readLayer(Node t) throws Exception {
-        final int layerWidth = getAttribute(t, "width", map.getWidth());
-        final int layerHeight = getAttribute(t, "height", map.getHeight());
+        final int layerWidth = getAttribute(t, "getWidth", map.getWidth());
+        final int layerHeight = getAttribute(t, "getHeight", map.getHeight());
 
         TileLayer ml = new TileLayer(layerWidth, layerHeight);
 
@@ -688,7 +688,7 @@ public class TMXMapReader {
                             .split("[\\s]*,[\\s]*");
 
                     if (csvTileIds.length != ml.getHeight() * ml.getWidth()) {
-                        throw new IOException("Number of tiles does not match the layer's width and height");
+                        throw new IOException("Number of tiles does not match the layer's getWidth and getHeight");
                     }
 
                     for (int y = 0; y < ml.getHeight(); y++) {
@@ -788,8 +788,8 @@ public class TMXMapReader {
         }
 
         // Get the map dimensions and create the map
-        int mapWidth = getAttribute(mapNode, "width", 0);
-        int mapHeight = getAttribute(mapNode, "height", 0);
+        int mapWidth = getAttribute(mapNode, "getWidth", 0);
+        int mapHeight = getAttribute(mapNode, "getHeight", 0);
 
         if (mapWidth > 0 && mapHeight > 0) {
             map = new TMXMap(mapWidth, mapHeight);
@@ -798,8 +798,8 @@ public class TMXMapReader {
             NodeList l = doc.getElementsByTagName("dimensions");
             for (int i = 0; (item = l.item(i)) != null; i++) {
                 if (item.getParentNode() == mapNode) {
-                    mapWidth = getAttribute(item, "width", 0);
-                    mapHeight = getAttribute(item, "height", 0);
+                    mapWidth = getAttribute(item, "getWidth", 0);
+                    mapHeight = getAttribute(item, "getHeight", 0);
 
                     if (mapWidth > 0 && mapHeight > 0) {
                         map = new TMXMap(mapWidth, mapHeight);

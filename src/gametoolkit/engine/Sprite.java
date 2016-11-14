@@ -1,5 +1,6 @@
 package gametoolkit.engine;
 
+import gametoolkit.engine.backend.Bitmap;
 import gametoolkit.math.Vec2f;
 
 /**

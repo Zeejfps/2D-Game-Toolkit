@@ -82,7 +82,7 @@ public class GlfwWindow implements Disposable {
             glfwWindowHint(hint.hint, hint.value);
         }
 
-        // Create the backend window
+        // Create the window
         window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create GLFW window");
@@ -90,8 +90,7 @@ public class GlfwWindow implements Disposable {
 
         // Center the window
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        glfwSetWindowPos(
-                window,
+        setPos(
                 (vidmode.width() - width) / 2,
                 (vidmode.height() - height) / 2
         );
@@ -116,6 +115,18 @@ public class GlfwWindow implements Disposable {
         }
     }
 
+    public void setCursorMode(int mode) {
+        glfwSetInputMode(window, GLFW_CURSOR, mode);
+    }
+
+    public void enableStickyKeys(boolean enable) {
+        glfwSetInputMode(window, GLFW_STICKY_KEYS, enable ? GLFW_TRUE : GLFW_FALSE);
+    }
+
+    public void enableStickMouseButtons(boolean enable) {
+        glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, enable ? GLFW_TRUE : GLFW_FALSE);
+    }
+
     public void swapBuffers() {
         glfwSwapBuffers(window);
     }
@@ -137,12 +148,16 @@ public class GlfwWindow implements Disposable {
         glfwDestroyWindow(window);
     }
 
-    public int width() {
+    public int getWidth() {
         return width;
     }
 
-    public int height() {
+    public int getHeight() {
         return height;
+    }
+
+    public void setPos(int x, int y) {
+        glfwSetWindowPos(window, x, y);
     }
 
     public void setSize(int width, int height) {

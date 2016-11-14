@@ -2,6 +2,7 @@ package gametoolkit.engine;
 
 import gametoolkit.engine.backend.Framebuffer;
 import gametoolkit.engine.backend.GlfwWindow;
+import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
@@ -9,6 +10,20 @@ import org.lwjgl.opengl.GL30;
  * Created by Zeejfps on 11/13/2016.
  */
 public class Display {
+
+    public enum Cursor {
+        NORMAL(GLFW_CURSOR_NORMAL),
+        HIDDEN(GLFW_CURSOR_HIDDEN),
+        DISABLED(GLFW_CURSOR_DISABLED);
+
+        private final int mode;
+        Cursor(int mode) {
+            this.mode = mode;
+        }
+    }
+
+    public static final int CURSOR_NORMAL = GLFW_CURSOR_NORMAL;
+    public static final int CURSOR_HIDDEN = GLFW_CURSOR_HIDDEN;
 
     private static GlfwWindow window;
 
@@ -22,16 +37,20 @@ public class Display {
         });
     }
 
+    public static void setCursor(Cursor cursor) {
+        window.setCursorMode(cursor.mode);
+    }
+
     public static void setVisible(boolean visible) {
         window.setVisible(visible);
     }
 
     public static int getWidth() {
-        return window.width();
+        return window.getWidth();
     }
 
     public static int getHeight() {
-        return window.height();
+        return window.getHeight();
     }
 
     public static boolean shouldClose() {
@@ -42,8 +61,8 @@ public class Display {
 
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
         if (needResize) {
-            int width = window.width();
-            int height = window.height();
+            int width = window.getWidth();
+            int height = window.getHeight();
             double aspect = fb.width() / (float)fb.height();
             double xScale= width;
             double yScale= width / aspect;

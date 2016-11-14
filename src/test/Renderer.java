@@ -1,6 +1,6 @@
 package test;
 
-import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.backend.Bitmap;
 import gametoolkit.engine.Camera;
 import gametoolkit.engine.Font;
 import gametoolkit.engine.Sprite;
@@ -32,7 +32,7 @@ public class Renderer {
         this.window = window;
         this.camera = camera;
         this.fb = camera.getFramebuffer();
-        resize(window.width(), window.height());
+        resize(window.getWidth(), window.getHeight());
         window.addSizeCallback((window1, width, height) -> {
             resize(width, height);
         });
@@ -80,7 +80,7 @@ public class Renderer {
         int x, y, srcx, srcy;
         for (srcy = -(ys-yPos), y = ys-1; y >= ye; y--, srcy++) {
             for (srcx = xs-xPos, x = xs; x < xe; x++, srcx++) {
-                int srcPix = bitmap.pixel(srcx+srcy*bitmap.width());
+                int srcPix = bitmap.pixels(srcx+srcy*bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     fb.pixels().put(x+y*fb.width(), srcPix);
             }
@@ -133,7 +133,7 @@ public class Renderer {
         int x, y, srcx, srcy;
         for (srcy = -(ys-yPos), y = ys-1; y >= ye; y--, srcy++) {
             for (srcx = xs-xPos, x = xs; x < xe; x++, srcx++) {
-                int srcPix = glyph.bitmap.pixel(srcx+srcy*glyph.bitmap.width());
+                int srcPix = glyph.bitmap.pixels(srcx+srcy*glyph.bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     fb.pixels().put(x+y*fb.width(), color);
             }

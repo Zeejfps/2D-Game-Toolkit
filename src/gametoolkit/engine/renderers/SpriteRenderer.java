@@ -1,6 +1,6 @@
 package gametoolkit.engine.renderers;
 
-import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.backend.Bitmap;
 import gametoolkit.engine.Camera;
 import gametoolkit.engine.Sprite;
 import gametoolkit.engine.backend.Framebuffer;
@@ -42,7 +42,7 @@ public class SpriteRenderer {
         int x, y, srcx, srcy;
         for (srcy = -(ys-yPos), y = ys-1; y >= ye; y--, srcy++) {
             for (srcx = xs-xPos, x = xs; x < xe; x++, srcx++) {
-                int srcPix = bitmap.pixel(srcx+srcy*bitmap.width());
+                int srcPix = bitmap.pixels(srcx+srcy*bitmap.width());
                 if ((0xff000000 & srcPix) != 0)
                     fb.pixels().put(x+y*fb.width(), srcPix);
             }
@@ -57,12 +57,12 @@ public class SpriteRenderer {
         }
         else
         if (angle == -90 || angle == 270) {
-            Bitmap result = new Bitmap(bitmap.height(), bitmap.width());
-            for (int y = 0; y < bitmap.height(); y++) {
-                for (int x = 0; x < bitmap.width(); x++) {
-                    int rotx = result.width()-1-y;
+            Bitmap result = new Bitmap(bitmap.getHeight(), bitmap.getWidth());
+            for (int y = 0; y < bitmap.getHeight(); y++) {
+                for (int x = 0; x < bitmap.getWidth(); x++) {
+                    int rotx = result.getWidth()-1-y;
                     int roty = x;
-                    result.pixel(roty * result.width() + rotx, bitmap.pixel(y*bitmap.width()+x));
+                    result.pixels(roty * result.getWidth() + rotx, bitmap.pixels(y*bitmap.getWidth()+x));
                 }
             }
             renderBitmap(result, xPos, yPos);
@@ -70,12 +70,12 @@ public class SpriteRenderer {
         }
         else
         if (angle == 90 || angle == -270) {
-            Bitmap result = new Bitmap(bitmap.height(), bitmap.width());
-            for (int y = 0; y < result.height(); y++) {
-                for (int x = 0; x < result.width(); x++) {
-                    int rotx = bitmap.width()-1-y;
+            Bitmap result = new Bitmap(bitmap.getHeight(), bitmap.getWidth());
+            for (int y = 0; y < result.getHeight(); y++) {
+                for (int x = 0; x < result.getWidth(); x++) {
+                    int rotx = bitmap.getWidth()-1-y;
                     int roty = x;
-                    result.pixel(y * result.width() + x, bitmap.pixel(roty*bitmap.width()+rotx));
+                    result.pixels(y * result.getWidth() + x, bitmap.pixels(roty*bitmap.getWidth()+rotx));
                 }
             }
             renderBitmap(result, xPos, yPos);
@@ -143,7 +143,7 @@ public class SpriteRenderer {
                 if (x < 0 || x >= bitmap.width() || y < 0 || y >= bitmap.height())
                     continue;
 
-                int src = bitmap.pixel(x, y);
+                int src = bitmap.pixels(x, y);
                 if (src == 0xffff00ff) continue;
 
                 fb.pixels().put(j+i*fb.width(), src);

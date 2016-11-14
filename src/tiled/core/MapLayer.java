@@ -83,8 +83,8 @@ public abstract class MapLayer implements Cloneable {
     /**
      * <p>Constructor for MapLayer.</p>
      *
-     * @param w width in tiles
-     * @param h height in tiles
+     * @param w getWidth in tiles
+     * @param h getHeight in tiles
      */
     public MapLayer(int w, int h) {
         this(new Rectangle(0, 0, w, h));
@@ -112,8 +112,8 @@ public abstract class MapLayer implements Cloneable {
      * <p>Constructor for MapLayer.</p>
      *
      * @param map the map this layer is part of
-     * @param w width in tiles
-     * @param h height in tiles
+     * @param w getWidth in tiles
+     * @param h getHeight in tiles
      */
     public MapLayer(TMXMap map, int w, int h) {
         this(w, h);
@@ -224,18 +224,18 @@ public abstract class MapLayer implements Cloneable {
     }
 
     /**
-     * Returns layer width in tiles.
+     * Returns layer getWidth in tiles.
      *
-     * @return layer width in tiles.
+     * @return layer getWidth in tiles.
      */
     public int getWidth() {
         return bounds.width;
     }
 
     /**
-     * Returns layer height in tiles.
+     * Returns layer getHeight in tiles.
      *
-     * @return layer height in tiles.
+     * @return layer getHeight in tiles.
      */
     public int getHeight() {
         return bounds.height;
@@ -370,8 +370,8 @@ public abstract class MapLayer implements Cloneable {
     /**
      * <p>resize.</p>
      *
-     * @param width the new width of the layer
-     * @param height the new height of the layer
+     * @param width the new getWidth of the layer
+     * @param height the new getHeight of the layer
      * @param dx the shift in x direction
      * @param dy the shift in y direction
      */

@@ -51,15 +51,15 @@ public class TransparentImageFilter extends RGBImageFilter {
     public TransparentImageFilter(int col) {
         trans = col;
 
-        // The filter doesn't depend on pixel location
+        // The filter doesn't depend on pixels location
         canFilterIndexColorModel = true;
     }
 
     /**
      * {@inheritDoc}
      *
-     * Filters the given pixel. It returns a transparent pixel for pixels that
-     * match the transparency color, or the existing pixel for anything else.
+     * Filters the given pixels. It returns a transparent pixels for pixels that
+     * match the transparency color, or the existing pixels for anything else.
      */
     @Override
     public int filterRGB(int x, int y, int rgb) {

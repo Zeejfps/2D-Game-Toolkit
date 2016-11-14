@@ -43,7 +43,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.backend.Bitmap;
 import tiled.util.TileCutter;
 import tiled.util.TransparentImageFilter;
 import tiled.util.BasicTileCutter;
@@ -149,7 +149,7 @@ public class TileSet implements Iterable<Tile> {
         Image tileImage = cutter.getNextTile();
         while (tileImage != null) {
             Tile tile = new Tile();
-            tile.setBitmap(Bitmap.create((BufferedImage)tileImage));
+            //tile.setBitmap(Bitmap.create((BufferedImage)tileImage));
             addNewTile(tile);
             tileImage = cutter.getNextTile();
         }
@@ -207,7 +207,7 @@ public class TileSet implements Iterable<Tile> {
         Image tileImage = tileCutter.getNextTile();
         while (tileImage != null) {
             Tile tile = getTile(id);
-            tile.setBitmap(Bitmap.create((BufferedImage)tileImage));
+            //tile.setBitmap(Bitmap.create((BufferedImage)tileImage));
             tileImage = tileCutter.getNextTile();
             id++;
         }
@@ -357,25 +357,25 @@ public class TileSet implements Iterable<Tile> {
     }
 
     /**
-     * Returns the width of tiles in this tileset. All tiles in a tileset should
-     * be the same width, and the same as the tile width of the map the tileset
+     * Returns the getWidth of tiles in this tileset. All tiles in a tileset should
+     * be the same getWidth, and the same as the tile getWidth of the map the tileset
      * is used with.
      *
-     * @return int - The maximum tile width
+     * @return int - The maximum tile getWidth
      */
     public int getTileWidth() {
         return tileDimensions.width;
     }
 
     /**
-     * Returns the tile height of tiles in this tileset. Not all tiles in a
-     * tileset are required to have the same height, but the height should be at
-     * least the tile height of the map the tileset is used with.
+     * Returns the tile getHeight of tiles in this tileset. Not all tiles in a
+     * tileset are required to have the same getHeight, but the getHeight should be at
+     * least the tile getHeight of the map the tileset is used with.
      *
      * If there are tiles with varying heights in this tileset, the returned
-     * height will be the maximum.
+     * getHeight will be the maximum.
      *
-     * @return the max height of the tiles in the set
+     * @return the max getHeight of the tiles in the set
      */
     public int getTileHeight() {
         return tileDimensions.height;

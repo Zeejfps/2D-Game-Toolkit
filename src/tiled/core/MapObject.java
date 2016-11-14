@@ -296,7 +296,7 @@ public class MapObject implements Cloneable {
     }
 
     /**
-     * <p>width.</p>
+     * <p>getWidth.</p>
      *
      * @return a double.
      */
@@ -323,7 +323,7 @@ public class MapObject implements Cloneable {
     }
 
     /**
-     * <p>height.</p>
+     * <p>getHeight.</p>
      *
      * @return a double.
      */

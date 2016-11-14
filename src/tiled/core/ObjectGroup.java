@@ -107,9 +107,9 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
     }
 
     /**
-     * sets the height
+     * sets the getHeight
      *
-     * @param height height
+     * @param height getHeight
      */
     public void setHeight(int height) {
         super.getBounds().height = height;
@@ -118,7 +118,7 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
     /**
      * sets the weight
      *
-     * @param width width
+     * @param width getWidth
      */
     public void setWidth(int width) {
         super.getBounds().width = width;
@@ -242,12 +242,12 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
      */
     public MapObject getObjectAt(double x, double y) {
         for (MapObject obj : objects) {
-            // Attempt to get an object bordering the point that has no width
+            // Attempt to get an object bordering the point that has no getWidth
             if (obj.getWidth() == 0 && obj.getX() + bounds.x == x) {
                 return obj;
             }
 
-            // Attempt to get an object bordering the point that has no height
+            // Attempt to get an object bordering the point that has no getHeight
             if (obj.getHeight() == 0 && obj.getY() + bounds.y == y) {
                 return obj;
             }
@@ -262,7 +262,7 @@ public class ObjectGroup extends MapLayer implements Iterable<MapObject> {
         return null;
     }
 
-    // This method will work at any zoom level, provided you provide the correct zoom factor. It also adds a one pixel buffer (that doesn't change with zoom).
+    // This method will work at any zoom level, provided you provide the correct zoom factor. It also adds a one pixels buffer (that doesn't change with zoom).
     /**
      * <p>getObjectNear.</p>
      *

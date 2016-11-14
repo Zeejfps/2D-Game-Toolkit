@@ -1,10 +1,9 @@
 package test;
 
 import gametoolkit.engine.*;
+import gametoolkit.engine.backend.Bitmap;
 import gametoolkit.engine.renderers.SpriteRenderer;
 import gametoolkit.engine.renderers.TextRenderer;
-import gametoolkit.math.Vec2f;
-import gametoolkit.math.Vec2i;
 import gametoolkit.utils.AssetLoader;
 
 import java.awt.event.KeyEvent;
@@ -34,9 +33,16 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onLoad() {
-        font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
+
+        try {
+            bitmap = Bitmap.load("test.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*font = AssetLoader.loadBitmapFont("fonts/Roboto.fnt");
         sprite = AssetLoader.loadSprite("test.png");
-        bitmap = AssetLoader.loadBitmap("test.png");
+        bitmap = AssetLoader.loadBitmap("test.png");*/
     }
 
     @Override
@@ -46,9 +52,9 @@ public class IsoGameMainScene extends Scene {
 
     @Override
     protected void onUpdate() {
-        if (Input.getKeyPressed(KeyEvent.VK_E)) {
+        /*if (Input.getKeyPressed(KeyEvent.VK_E)) {
             Game.loadScene(new TestScene());
-        }
+        }*/
 
         if (Display.shouldClose() || Input.getKeyPressed(KeyEvent.VK_A)) {
             Game.exit();
@@ -65,7 +71,8 @@ public class IsoGameMainScene extends Scene {
     protected void onRender() {
         //textRenderer.renderString("Test String?", 0, 100, font, 0);
         //spriteRenderer.renderSprite(sprite, new Vec2f(0, 0));
-        spriteRenderer.renderBitmap(bitmap, 0, 0, angle);
+        //spriteRenderer.renderBitmap(bitmap, 0, 0, angle);
+        spriteRenderer.renderBitmap(bitmap, 50, 150);
     }
 
     @Override

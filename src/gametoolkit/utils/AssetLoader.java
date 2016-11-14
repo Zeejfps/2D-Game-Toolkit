@@ -1,6 +1,6 @@
 package gametoolkit.utils;
 
-import gametoolkit.engine.Bitmap;
+import gametoolkit.engine.backend.Bitmap;
 import gametoolkit.engine.Font;
 import gametoolkit.engine.Sprite;
 import tiled.core.TMXMap;
@@ -30,7 +30,7 @@ public class AssetLoader {
         } catch (IOException e) {
             System.err.println("Failed to load bitmap");
             e.printStackTrace();
-            return new Bitmap(0, 0, new int[0]);
+            return null;//new Bitmap(0, 0, new int[0]);
         }
     }
 
@@ -40,7 +40,7 @@ public class AssetLoader {
             bitmap = Bitmap.load(path);
         } catch (IOException e) {
             System.err.println("Failed to load sprite");
-            bitmap = new Bitmap(0, 0, new int[0]);
+            bitmap = null;//new Bitmap(0, 0, new int[0]);
         }
         return new Sprite(bitmap);
     }
@@ -55,7 +55,7 @@ public class AssetLoader {
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     int[] pixels = img.getRGB(x*tileWidth, y*tileHeight, tileWidth, tileHeight, null, 0, tileWidth);
-                    Bitmap bitmap = new Bitmap(tileWidth, tileHeight, pixels);
+                    Bitmap bitmap = null;//new Bitmap(tileWidth, tileHeight, pixels);
                     sprites[x+y*w] = new Sprite(bitmap);
                 }
             }
