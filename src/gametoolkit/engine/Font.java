@@ -2,7 +2,9 @@ package gametoolkit.engine;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -13,6 +15,8 @@ import java.util.regex.Pattern;
  * Created by Zeejfps on 10/30/2016.
  */
 public class Font {
+
+    private static final Pattern PATTERN = Pattern.compile("(\\w+)=\"?([^\\s\"]+)");
 
     private final Map<KeyPair, Integer> kernings;
     private final Map<Integer, Glyph> fontChars;
@@ -79,55 +83,27 @@ public class Font {
     }
 
     public static Font load(String path) throws IOException {
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(Font.class.getClassLoader().getResourceAsStream(path)));
+
+        Map<String, String> infoMap = parseLine(br.readLine());
+        Map<String, String> commonMap = parseLine(br.readLine());
         Map<Integer, Glyph> fontChars = new HashMap<>();
-
-        Scanner scanner = new Scanner(
-                Font.class.getClassLoader().getResourceAsStream(path)
-        );
-        Pattern pattern = Pattern.compile("(\\w+)=\"?([^\\s\"]+)");
-        Matcher matcher;
-
-        Map<String, String> infoMap = new HashMap<>();
-        // Read info line
-        String infoLine = scanner.nextLine();
-        matcher = pattern.matcher(infoLine);
-        addToMap(matcher, infoMap);
-
-        Map<String, String> commonMap = new HashMap<>();
-        // Read the common line;
-        String commonLine = scanner.nextLine();
-        matcher = pattern.matcher(commonLine);
-        addToMap(matcher, commonMap);
 
         int pages = Integer.parseInt(commonMap.get("pages"));
         for (int pageIndex = 0; pageIndex < pages; pageIndex++) {
 
-            Map<String, String> pageMap = new HashMap<>();
-            // Read the page
-            String pageLine = scanner.nextLine();
-            matcher = pattern.matcher(pageLine);
-            addToMap(matcher, pageMap);
+            Map<String, String> pageMap = parseLine(br.readLine());
 
             String fileName = pageMap.get("file");
             BufferedImage pageImg = ImageIO.read(
                     Font.class.getClassLoader().getResourceAsStream("fonts/" + fileName)
             );
 
-            Map<String, String> charsMap = new HashMap<>();
-            // Read number of chars
-            String charsLine = scanner.nextLine();
-            matcher = pattern.matcher(charsLine);
-            addToMap(matcher, charsMap);
-
-            // Read all of the chars
-            int numChars = Integer.parseInt(charsMap.get("count"));
+            int numChars = Integer.parseInt(parseLine(br.readLine()).get("count"));
             for (int charIndex = 0; charIndex < numChars; charIndex++) {
 
-                Map<String, String> charMap = new HashMap<>();
-                // Read a char
-                String charLine = scanner.nextLine();
-                matcher = pattern.matcher(charLine);
-                addToMap(matcher, charMap);
+                Map<String, String> charMap = parseLine(br.readLine());
 
                 int id = Integer.parseInt(charMap.get("id"));
                 int x = Integer.parseInt(charMap.get("x"));
@@ -148,21 +124,12 @@ public class Font {
 
         }
 
-        Map<KeyPair, Integer> kernings = new HashMap<>();
-        Map<String, String> kerningsMap = new HashMap<>();
-        // Read in the kernings
-        String kerningLine = scanner.nextLine();
-        matcher = pattern.matcher(kerningLine);
-        addToMap(matcher, kerningsMap);
+        HashMap<KeyPair, Integer> kernings = new HashMap<>();
 
-        // Read each kerning
-        int numKernings = Integer.parseInt(kerningsMap.get("count"));
+        int numKernings = Integer.parseInt(parseLine(br.readLine()).get("count"));
         for (int i = 0; i < numKernings; i++) {
 
-            Map<String, String> k = new HashMap<>();
-            String line = scanner.nextLine();
-            matcher = pattern.matcher(line);
-            addToMap(matcher, k);
+            Map<String, String> k = parseLine(br.readLine());
 
             int first = Integer.parseInt(k.get("first"));
             int second = Integer.parseInt(k.get("second"));
@@ -175,12 +142,15 @@ public class Font {
         return new Font(fontChars, kernings, lineHeight);
     }
 
-    private static void addToMap(Matcher m, Map<String, String> map) {
-        while (m.find()) {
-            String key = m.group(1);
-            String value = m.group(2);
-            map.put(key, value);
+    private static Map<String, String> parseLine(String line) {
+        Matcher matcher = PATTERN.matcher(line);
+        Map<String, String> params = new HashMap<>();
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String value = matcher.group(2);
+            params.put(key, value);
         }
+        return params;
     }
 
 }

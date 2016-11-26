@@ -63,7 +63,7 @@ public class IsoGameMainScene extends Scene {
     float angle = 0f;
     @Override
     protected void onRender() {
-        //textRenderer.renderString("Test String?", 0, 100, font, 0);
+        textRenderer.renderString("Test String?", 0, 100, font, 0);
         //spriteRenderer.renderSprite(sprite, new Vec2f(0, 0));
         spriteRenderer.renderBitmap(bitmap, 0, 0, angle);
     }
